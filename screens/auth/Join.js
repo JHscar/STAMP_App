@@ -1,10 +1,10 @@
 import React from 'react';
 import {
     Button,
-    StyleSheet,
     Text,
     View,
 } from "react-native";
+import { styles } from './Join_Style'
 
 export default Join = (props) => {
     const { navigation } = props;
@@ -22,17 +22,5 @@ export default Join = (props) => {
 };
 Join.navigationOptions = {
     // header: null,
+    title: "회원가입",
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: "column",
-        justifyContent: "center", // 상하
-        alignItems: "center", // 좌우
-    },
-    text: {
-        fontWeight: "bold",
-        fontSize: 40
-    },
-});
