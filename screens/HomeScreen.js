@@ -14,7 +14,7 @@ import {
 import { MonoText } from '../components/StyledText';
 
 export default function HomeScreen(props) {
-  _logout = async () => {
+  const _logout = async () => {
     await AsyncStorage.clear();
     props.navigation.navigate("AuthChecker")
   }
