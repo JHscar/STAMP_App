@@ -2,24 +2,27 @@ import React from 'react';
 import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
 
-// 인증 전 (로그인/회원가입)
+// 인증 체크 
+import AuthChecker from '../screens/auth/AuthChecker';
+
+// 토큰 no -> 인증 체크 (fail) -> Auth Nav
 import Login from '../screens/auth/Login';
 import Join from '../screens/auth/Join';
-
 const AuthStack = createStackNavigator({ Login, Join });
-// 인증 후 -> 메인페이지 이동
-import MainTabNavigator from './MainTabNavigator';
 
+// 토큰 ok -> 인증 체크 (success) -> Main Nav
+import MainTabNavigator from './MainTabNavigator'; 
 
 
 export default createAppContainer(
   createSwitchNavigator(
-    { // 인증 전,후 분기
+    {
+      AuthChecker,
       Auth: AuthStack,
       Main: MainTabNavigator,
     },
     {
-      initialRouteName: "Auth"
+      initialRouteName: "AuthChecker"
     }
   )
 );
