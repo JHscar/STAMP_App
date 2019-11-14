@@ -1,12 +1,25 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
+
+// 인증 전 (로그인/회원가입)
+import Login from '../screens/auth/Login';
+import Join from '../screens/auth/Join';
+
+const AuthStack = createStackNavigator({ Login, Join });
+// 인증 후 -> 메인페이지 이동
 import MainTabNavigator from './MainTabNavigator';
 
+
+
 export default createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-  })
+  createSwitchNavigator(
+    { // 인증 전,후 분기
+      Auth: AuthStack,
+      Main: MainTabNavigator,
+    },
+    {
+      initialRouteName: "Auth"
+    }
+  )
 );
