@@ -11,7 +11,7 @@ import Join from '../screens/auth/Join';
 const AuthStack = createStackNavigator({ Login, Join });
 
 // 토큰 ok -> 인증 체크 (success) -> Main Nav
-import MainTabNavigator from './MainTabNavigator'; 
+import MainTabNavigator from './MainTabNavigator';
 
 
 export default createAppContainer(

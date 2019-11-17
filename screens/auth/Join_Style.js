@@ -1,21 +1,80 @@
 import { StyleSheet, Dimensions } from 'react-native';
-
+import { Header } from 'react-navigation';
 const { width, height } = Dimensions.get("window");
 
+// const baseMargin = width * 0.01;
+// console.log(baseMargin);
+
 export const styles = StyleSheet.create({
+    logoSection: {
+        justifyContent: "center",
+        alignItems: "center",
+        width,
+        height: 250,
+        backgroundColor: "red",
+    },
+    logo: {
+        height: "100%",
+        resizeMode: "cover"
+    },
+    /**
+     * ==============================================================
+     */
+    stepsBar: {
+        alignSelf: "center",
+        marginTop: 10,
+        flexDirection: "row",
+        width: "70%",
+        justifyContent: "space-between",
+        alignItems: "center",
+    },
+    setps: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: width * 0.08,
+        height: width * 0.08,
+        borderRadius: width * 0.04,
+        borderColor: "gray",
+        borderWidth: 2,
+    },
+    setpsText: {
+        fontFamily: "jua",
+        color: "black"
+    },
+    setpsSelected: {
+        justifyContent: "center",
+        alignItems: "center",
+        width: width * 0.08,
+        height: width * 0.08,
+        borderRadius: width * 0.04,
+        backgroundColor: "gray"
+    },
+    setpsSelectedText: {
+        fontFamily: "jua",
+        color: "white"
+    },
+    stepDash: {
+        width: width * 0.08,
+        height: width * 0.08 * 0.1,
+        borderRadius: 3,
+        backgroundColor: "#D1D0CE", // Gray Goose
+    },
+    /**
+     * ==============================================================
+     */
     container: {
-        flex: 1,
         flexDirection: "column",
         // justifyContent: "center", // 상하
         alignItems: "center", // 좌우
-        paddingVertical: 30,
         width,
-        height,
+        // height: height - Header.HEIGHT - 250 - (10 + width * 0.08),
+        // 상태바 뺀 높이에서 - (로고영역) - (단계표시영역)
+        // backgroundColor: "yellow"
     },
     field: {
         alignSelf: "flex-start",
+        marginTop: 10,
         marginLeft: 30,
-        marginBottom: 10,
         padding: 5,
         fontFamily: "jua",
         fontSize: 15,
@@ -23,9 +82,8 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
     },
     inputSection: {
-        // flex: 1,
         flexDirection: "row",
-        // justifyContent: "space-between",
+        marginVertical: 5,
         alignItems: "center",
         width: "70%",
         height: 40,
@@ -33,19 +91,54 @@ export const styles = StyleSheet.create({
         borderBottomColor: "#CCC",
     },
     iconWrap: {
-        marginLeft: 10,
-    },
-    inputText: {
-        marginLeft: 10,
-    },
-    inputButton: {
-        position: "absolute",
-        marginLeft: "70%",
         justifyContent: "center",
         alignItems: "center",
-        width: 60,
-        height: 35,
+        width: 35,
+        // backgroundColor: "blue",
+        marginHorizontal: 5,
+    },
+    inputText: {
+        flex: 1,
+        backgroundColor: "#F0FFFF",
+        paddingHorizontal: 10,
+        marginHorizontal: 5,
+    },
+    inputButton: {
+        //위치
+        alignSelf: "flex-end",
+        marginRight: width * 0.15,
+        //크기
+        height: 30,
+        //스타일
         borderRadius: 5,
         backgroundColor: "gray",
+        //내부
+        justifyContent: "center",
+        alignItems: "center",
+        paddingHorizontal: 3,
+    },
+    /**
+     * ==============================================================
+     */
+    stepConSection: {
+        alignSelf: "center",
+        marginTop: 20,
+        flexDirection: "row",
+        width: "70%",
+        height: width * 0.08,
+        justifyContent: "space-between",
+        alignItems: "center",
+        // backgroundColor: "yellow"
+    },
+    setpConButton: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "15%",
+        height: "100%",
+        marginHorizontal: 5,
+    },
+    setpConText:{
+        marginHorizontal:5,
     },
 });
