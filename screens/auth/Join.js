@@ -14,6 +14,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default Join = (props) => {
     // const { navigation } = props;
+    const DBdata = [
+        { name: "kim", email: "kim@email.com", phone_num: "01012340001" },
+        { name: "lee", email: "lee@email.com", phone_num: "01012340002" },
+        { name: "park", email: "park@email.com", phone_num: "01012340003" },
+    ];
     /**
      * ============================================================================================================================
      *          Keyboard Height Event
@@ -37,11 +42,29 @@ export default Join = (props) => {
     *          UserInput Infomation
     * ============================================================================================================================ 
     */
-    const [UserInfo, setUserInfo] = useState({
-        id: `Test${Math.floor(Math.random() * 100)}`,
-        password: `${Math.floor(Math.random() * 1000)}qwer`,
-        passwordCon: "",
-    });
+    // const [UserInfo, setUserInfo] = useState({
+    //     id: `Test${Math.floor(Math.random() * 100)}`,
+    //     password: `${Math.floor(Math.random() * 1000)}qwer`,
+    //     passwordCon: "",
+    // });
+    const name = _userInputs("");
+    const email = _userInputs("");
+    const phone_num = _userInputs("");
+
+    function _userInputs(defaultValue) { // 입력값 갱신용
+        const [value, setvalue] = useState(defaultValue);
+        function __chageValue(text) { setvalue(text); };
+        function __validateInput(){};
+        return { value, onChangeText: __chageValue }
+    }
+
+    const _중복확인 = async (obj, key) => { // personal_DB api
+        const isUsable = (await DBdata.find(data => data[key] === obj.value) == null);
+        console.log(key,"는 사용가능한가요?", isUsable);
+    }
+    useEffect(() => { _중복확인(email, "email") }, [email.value]);
+    useEffect(() => { _중복확인(phone_num, "phone_num") }, [phone_num.value]);
+
     //////////
 
     /**
@@ -101,6 +124,7 @@ export default Join = (props) => {
                                     returnKeyType="next"
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => _2stRef.focus()}
+                                    {...name}
                                 />
                             </View>
                             <View style={styles.inputSection}>
@@ -116,6 +140,7 @@ export default Join = (props) => {
                                     returnKeyType="next"
                                     blurOnSubmit={false}
                                     onSubmitEditing={() => _3stRef.focus()}
+                                    {...email}
                                 />
                             </View>
                             <View style={styles.inputSection}>
@@ -128,10 +153,11 @@ export default Join = (props) => {
                                     placeholderTextColor="gray"
                                     require
                                     ref={ref => _3stRef = ref}
+                                    {...phone_num}
                                 />
                             </View>
                             <TouchableOpacity activeOpacity={.5} style={styles.inputButton}>
-                                <Text>핸드폰인증</Text>
+                                <Text>중복확인</Text>
                             </TouchableOpacity>
                         </View>
 
@@ -222,7 +248,7 @@ export default Join = (props) => {
             </ScrollView>
 
             <View style={styles.footerContainer}>
-                <Text style={styles.copyrightText}>ⓒ2019. STAMP .All right reserved.</Text>
+                <Text style={styles.copyrightText}>ⓒ 2019. STAMP .All right reserved.</Text>
             </View>
         </>
     )
@@ -230,5 +256,4 @@ export default Join = (props) => {
 Join.navigationOptions = {
     // header: null,
     title: "회원가입",
-    headerLayoutPreset: "center",
 };
