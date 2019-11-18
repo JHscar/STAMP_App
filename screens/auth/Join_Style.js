@@ -64,7 +64,7 @@ export const styles = StyleSheet.create({
      */
     container: {
         flexDirection: "column",
-        // justifyContent: "center", // 상하
+        justifyContent: "center", // 상하
         alignItems: "center", // 좌우
         width,
         // height: height - Header.HEIGHT - 250 - (10 + width * 0.08),
@@ -138,7 +138,41 @@ export const styles = StyleSheet.create({
         height: "100%",
         marginHorizontal: 5,
     },
-    setpConText:{
-        marginHorizontal:5,
+    setpConText: {
+        marginHorizontal: 5,
+    },
+    /**
+    * ==============================================================
+    */
+    submitContainer: {
+        alignSelf: "center",
+        width: "70%",
+        height: width * 0.1,
+        marginTop: 10,
+        backgroundColor: "#4863A0", // Steel Blue
+        borderRadius: width * 0.1,
+    },
+    submitButton: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    submitText: {
+        fontFamily: "jua",
+        fontSize: width * 0.1 * 0.5, // height의 절반
+        color: "#B6B6B4", //Gray Cloud
+    },
+    /**
+    * ==============================================================
+    */
+    footerContainer: {
+        // alignSelf: "flex-end",
+        justifyContent: "center",
+        alignItems: "center",
+        // backgroundColor: "yellow",
+    },
+    copyrightText: {
+        fontFamily: "jua",
+        color: "#B6B6B4", //Gray Cloud
     },
 });
