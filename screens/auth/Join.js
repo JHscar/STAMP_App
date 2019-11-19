@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import {
+    Alert,
+    ActivityIndicator,
     Button,
     Image,
     Keyboard,
@@ -14,10 +16,11 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default Join = (props) => {
     // const { navigation } = props;
+    // console.log(Keyboard.);
     const DBdata = [
-        { name: "kim", email: "kim@email.com", phone_num: "01012340001" },
-        { name: "lee", email: "lee@email.com", phone_num: "01012340002" },
-        { name: "park", email: "park@email.com", phone_num: "01012340003" },
+        { name: "김", email: "kim@email.com", phone_num: "01012340001", id: "kim", password: "!234Qwer" },
+        { name: "이", email: "lee@email.com", phone_num: "01012340002", id: "lee", password: "!234Qwer" },
+        { name: "박", email: "park@email.com", phone_num: "01012340003", id: "park", password: "!234Qwer" },
     ];
     /**
      * ============================================================================================================================
@@ -42,29 +45,130 @@ export default Join = (props) => {
     *          UserInput Infomation
     * ============================================================================================================================ 
     */
-    // const [UserInfo, setUserInfo] = useState({
-    //     id: `Test${Math.floor(Math.random() * 100)}`,
-    //     password: `${Math.floor(Math.random() * 1000)}qwer`,
-    //     passwordCon: "",
-    // });
-    const name = _userInputs("");
-    const email = _userInputs("");
-    const phone_num = _userInputs("");
+    const [PersonalInfo, setPersonalInfo] = useState({ name: "", email: "", phone_num: "" });
+    const [UserInfo, setUserInfo] = useState({ id: "", password: "", passwordCheck: "" });
 
-    function _userInputs(defaultValue) { // 입력값 갱신용
-        const [value, setvalue] = useState(defaultValue);
-        function __chageValue(text) { setvalue(text); };
-        function __validateInput(){};
-        return { value, onChangeText: __chageValue }
+    const _userInputs = (text, type, key) => { // 입력값 갱신용  
+        //text는 입력값, type은 PersonalInfo ="P" UserInfo ="U",key는 바꿀 대상
+        type == "P" && setPersonalInfo({ ...PersonalInfo, [key]: text });
+        type == "U" && setUserInfo({ ...UserInfo, [key]: text });
+    };
+
+    const [Warning, setWarning] = useState({  // 입력값 검증 결과 _w는 word, _c는 color
+        name_w: "한글 [ 이름 ] 을 입력 하세요.",
+        name_c: null,
+        email_w: "[ 이메일 아이디 ] @ [ 도메인 ]",
+        email_c: null,
+        phone_num_w: "[ - ] 없이 숫자만 입력하세요.",
+        phone_num_c: null,
+        id_w: "[ 아이디 ] 를 입력하세요. ( 3 자이상 / 특수문자 _ 만 가능 )",
+        id_c: null,
+        password_w: "[ 비밀번호 ] 를 입력하세요. ( 8~15 자 / 특수문자 + 숫자 + 대소문자 )",
+        password_c: null,
+        passwordCheck_w: "같은 [ 비밀번호 ] 를 한번 더 입력하세요.",
+        passwordCheck_c: null,
+
+    });
+
+    const _validate = (type, key) => { // 입력값 검증 함수
+        const { name, email, phone_num } = PersonalInfo;  // 비구조화
+        const { id, password, passwordCheck } = UserInfo;
+
+        if (type === "P" && key === "name") {
+            // const nameRule = /[-`~!@#$%^&*|\\\'\";:\/?,.\sㄱ-ㅎa-zA-Z]/gi; // 특수문자+공백+한글초성+영문
+            const nameRule = /^([가-힣]){1,}$/; // 한글만
+            nameRule.test(name)
+                ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
+                : name.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+        }
+        if (type === "P" && key === "email") {
+            const emailRule = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+            emailRule.test(email)
+                ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
+                : email.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" })
+        }
+        if (type === "P" && key === "phone_num") {
+            const phoneRule = /^01([0|1|6|7|8|9]?)([0-9]{3,4})([0-9]{4})$/;
+            phoneRule.test(phone_num)
+                ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
+                : phone_num.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" })
+        }
+        if (type === "U" && key === "id") {
+            const idRule = /([_]?[0-9a-zA-Z가-힣]){3,}/; // _가능, 3자 이상
+            idRule.test(id)
+                ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
+                : id.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+        }
+        if (type === "U" && key === "password") {
+            const passwordRule = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&+=]).*$/; // 특수문자 / 문자 / 숫자 포함 형태의 8~15자리 이내의 암호
+            passwordRule.test(password)
+                ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
+                : password.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+        }
+        if (type === "U" && key === "passwordCheck") {
+            passwordCheck === password
+                ? passwordCheck.length > 0 && setWarning({ ...Warning, [key + "_w"]: "일치합니다.", [key + "_c"]: "blue" })
+                : passwordCheck.length > 0 && setWarning({ ...Warning, [key + "_w"]: "입력하신 비밀번호와 일치하지 않습니다.", [key + "_c"]: "red" });
+
+        }
+
+    };
+    useEffect(() => { _validate("P", "name"); _dbChecker("C", "name") }, [PersonalInfo.name]);
+    useEffect(() => { _validate("P", "email"); _dbChecker("C", "email") }, [PersonalInfo.email]);
+    useEffect(() => { _validate("P", "phone_num"); _dbChecker("C", "phone_num") }, [PersonalInfo.phone_num]);
+
+    useEffect(() => { _validate("U", "id"); _dbChecker("C", "id") }, [UserInfo.id]);
+    useEffect(() => { _validate("U", "password"); _dbChecker("C", "password") }, [UserInfo.password]);
+    useEffect(() => { _validate("U", "passwordCheck"); _dbChecker("C", "passwordCheck") }, [UserInfo.passwordCheck]);
+
+    // *** Warning Component ***
+    const WarningText = ({ wordFor }) => {
+        return (
+            <Text style={[styles.inputWarning, Warning[wordFor + "_c"] && { color: Warning[wordFor + "_c"] }]} >
+                {Warning[wordFor + "_w"]}
+            </Text>
+        )
     }
+    // *** DB check ***
+    const [DBcheck, setDBcheck] = useState({ name: false, email: false, phone_num: false, id: false, password: false, passwordCheck: false });
+    const _dbChecker = async (type, key) => {  // type:C = clear
+        // console.log(Warning[key + "_c"]); // 디버그용
+        if (Warning[key + "_c"] == "blue") { // 입력값 검증 통과 한 것만 
+            if (type === "P") {
+                if (key === "name") { // name은 특수 처리...
+                    [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })];
+                    return;
+                }
 
-    const _중복확인 = async (obj, key) => { // personal_DB api
-        const isUsable = (await DBdata.find(data => data[key] === obj.value) == null);
-        console.log(key,"는 사용가능한가요?", isUsable);
+                setDBcheck({ ...DBcheck, [key]: "loading" });
+                // API
+                const result = await DBdata.find(data => data[key] === PersonalInfo[key]);
+                (result == null)
+                    ? [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })]
+                    : [setWarning({ ...Warning, [key + "_w"]: "이미 사용중 입니다.", [key + "_c"]: "red" })]
+            }
+            if (type === "U") {
+                if (key === "password") { // password는 특수 처리...
+                    [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })];
+                    return;
+                }
+                if (key === "passwordCheck") { // passwordCheck도 특수 처리
+                    setDBcheck({ ...DBcheck, [key]: "loading" });
+                    setTimeout(() => {
+                        [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })]
+                    }, 1000);
+                    return;
+                }
+                setDBcheck({ ...DBcheck, [key]: "loading" });
+                // API
+                const result = await DBdata.find(data => data[key] === UserInfo[key]);
+                (result == null)
+                    ? [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })]
+                    : [setWarning({ ...Warning, [key + "_w"]: "이미 사용중 입니다.", [key + "_c"]: "red" })]
+            }
+        }
+        if (type === "C" && DBcheck[key] === true) { setDBcheck({ ...DBcheck, [key]: false }); }
     }
-    useEffect(() => { _중복확인(email, "email") }, [email.value]);
-    useEffect(() => { _중복확인(phone_num, "phone_num") }, [phone_num.value]);
-
     //////////
 
     /**
@@ -72,15 +176,32 @@ export default Join = (props) => {
      *          Join Step Component
      * ============================================================================================================================ 
      */
-    const StepNum = 4;
+    const StepNum = 3;
+    const stepTag = ["개인정보", "계정정보", "인증하기"];
+    const [StepProgress, setStepProgress] = useState({ 1: "inProgress", 2: "inProgress" });
+    // const stepProgress = ["inProgress", "inProgress"];
+    useEffect(() => {
+        // console.log(DBcheck);  // 디버그용
+        // console.log(StepProgress); // 디버그용
+        (DBcheck.email && DBcheck.phone_num && Warning.name_c === "blue")
+            ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
+            : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+
+        (DBcheck.id && DBcheck.password && DBcheck.passwordCheck)
+            ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
+            : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+    }, [DBcheck])
     const [JoinSteps, setJoinSteps] = useState(1);
     const StepsBar = ({ stepNum, step }) => { // component
         let voidArray = new Array(stepNum).fill(1);
         return (<>
             {voidArray.map((el, ix) => (
                 <Fragment key={ix + 1}>
-                    <View style={(ix + 1) === step ? styles.setpsSelected : styles.setps}>
-                        <Text style={(ix + 1) === step ? styles.setpsSelectedText : styles.setpsText}>{(ix + 1)}</Text>
+                    <View style={styles.stepWrap}>
+                        <View style={(ix + 1) === step ? styles.stepsSelected : styles.steps}>
+                            <Text style={(ix + 1) === step ? styles.stepsSelectedText : styles.stepsText}>{(ix + 1)}</Text>
+                        </View>
+                        <Text style={styles.stepTag}>{stepTag[ix]}</Text>
                     </View>
                     {(ix + 1) !== stepNum && <View style={styles.stepDash}></View>}
                 </Fragment>
@@ -107,144 +228,201 @@ export default Join = (props) => {
                 <View style={styles.stepsBar}>
                     <StepsBar stepNum={StepNum} step={JoinSteps} />
                 </View>
-                {
-                    JoinSteps === 1
-                        ? <View style={styles.container}>
-                            <Text style={styles.field}>개인정보</Text>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-person" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="Name"
-                                    placeholderTextColor="gray"
-                                    require
-                                    // returnKeyLabel="다음"
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                    onSubmitEditing={() => _2stRef.focus()}
-                                    {...name}
-                                />
+                {JoinSteps === 1
+                    && <View style={styles.container}>
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-person" size={30} color="black" />
                             </View>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-mail" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="email"
-                                    placeholderTextColor="gray"
-                                    require
-                                    ref={ref => _2stRef = ref}
-                                    returnKeyType="next"
-                                    blurOnSubmit={false}
-                                    onSubmitEditing={() => _3stRef.focus()}
-                                    {...email}
-                                />
-                            </View>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-phone-portrait" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="Phone Number"
-                                    placeholderTextColor="gray"
-                                    require
-                                    ref={ref => _3stRef = ref}
-                                    {...phone_num}
-                                />
-                            </View>
-                            <TouchableOpacity activeOpacity={.5} style={styles.inputButton}>
-                                <Text>중복확인</Text>
-                            </TouchableOpacity>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Name"
+                                placeholderTextColor="gray"
+                                require={true}
+                                // returnKeyLabel="다음"
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => step1_2stRef.focus()}
+                                value={PersonalInfo.name}
+                                onChangeText={(text) => { _userInputs(text, "P", "name") }}
+                                onEndEditing={() => { _dbChecker("P", "name") }}
+                            />
                         </View>
+                        <WarningText wordFor="name" />
 
-                        : <View style={styles.container}>
-                            <Text style={styles.field}>계정정보</Text>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-person" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="User ID ( Nick Name )"
-                                    placeholderTextColor="gray"
-                                    require
-                                    value={UserInfo.id}
-                                />
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-mail" size={30} color="black" />
                             </View>
-                            <TouchableOpacity activeOpacity={.5} style={styles.inputButton}>
-                                <Text>중복확인</Text>
-                            </TouchableOpacity>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-key" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="Password"
-                                    placeholderTextColor="gray"
-                                    secureTextEntry
-                                    require
-                                />
-                            </View>
-                            <View style={styles.inputSection}>
-                                <View style={styles.iconWrap}>
-                                    <Ionicons name="md-key" size={30} color="black" />
-                                </View>
-                                <TextInput
-                                    style={styles.inputText}
-                                    placeholder="Confirm Password"
-                                    placeholderTextColor="gray"
-                                    secureTextEntry
-                                    require
-                                />
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Email"
+                                placeholderTextColor="gray"
+                                require
+                                ref={ref => step1_2stRef = ref}
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => step1_3stRef.focus()}
+                                value={PersonalInfo.email}
+                                onChangeText={(text) => { _userInputs(text, "P", "email") }}
+                                onEndEditing={() => { _dbChecker("P", "email") }}
+                            />
+                            <View style={styles.iconWrap}>
+                                {DBcheck.email
+                                    ? DBcheck.email === "loading"
+                                        ? <ActivityIndicator />
+                                        : <Ionicons name="md-checkbox-outline" size={30} color="#347C2C"/*jungleGreen*/ />
+                                    : <Ionicons name="md-square-outline" size={30} color="gray" />
+                                }
                             </View>
                         </View>
+                        <WarningText wordFor="email" />
+
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-phone-portrait" size={30} color="black" />
+                            </View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Phone Number"
+                                placeholderTextColor="gray"
+                                require
+                                ref={ref => step1_3stRef = ref}
+                                keyboardType="phone-pad"
+                                value={PersonalInfo.phone_num}
+                                onChangeText={(text) => { _userInputs(text, "P", "phone_num") }}
+                                onEndEditing={() => { _dbChecker("P", "phone_num") }}
+                            />
+                            <View style={styles.iconWrap}>
+                                {DBcheck.phone_num
+                                    ? DBcheck.phone_num === "loading"
+                                        ? <ActivityIndicator />
+                                        : <Ionicons name="md-checkbox-outline" size={30} color="#347C2C"/*jungleGreen*/ />
+                                    : <Ionicons name="md-square-outline" size={30} color="gray" />
+                                }
+                            </View>
+                        </View>
+                        <WarningText wordFor="phone_num" />
+                    </View>
                 }
+                {JoinSteps === 2
+                    && <View style={styles.container}>
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-person" size={30} color="black" />
+                            </View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="User ID ( Nick Name )"
+                                placeholderTextColor="gray"
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => step2_2stRef.focus()}
+                                value={UserInfo.id}
+                                onChangeText={(text) => { _userInputs(text, "U", "id") }}
+                                onEndEditing={() => { _dbChecker("U", "id") }}
+                            />
+                            <View style={styles.iconWrap}>
+                                {DBcheck.id
+                                    ? DBcheck.id === "loading"
+                                        ? <ActivityIndicator />
+                                        : <Ionicons name="md-checkbox-outline" size={30} color="#347C2C"/*jungleGreen*/ />
+                                    : <Ionicons name="md-square-outline" size={30} color="gray" />
+                                }
+                            </View>
+                        </View>
+                        <WarningText wordFor="id" />
+
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-key" size={30} color="black" />
+                            </View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Password"
+                                placeholderTextColor="gray"
+                                secureTextEntry
+                                ref={ref => step2_2stRef = ref}
+                                returnKeyType="next"
+                                blurOnSubmit={false}
+                                onSubmitEditing={() => step2_3stRef.focus()}
+                                value={UserInfo.password}
+                                onChangeText={(text) => { _userInputs(text, "U", "password") }}
+                                onEndEditing={() => { _dbChecker("U", "password") }}
+                            />
+                        </View>
+                        <WarningText wordFor="password" />
+
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-key" size={30} color="black" />
+                            </View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="Confirm Password"
+                                placeholderTextColor="gray"
+                                secureTextEntry
+                                ref={ref => step2_3stRef = ref}
+                                value={UserInfo.passwordCheck}
+                                onChangeText={(text) => { _userInputs(text, "U", "passwordCheck") }}
+                                onEndEditing={() => { _dbChecker("U", "passwordCheck") }}
+                            />
+                            <View style={styles.iconWrap}>
+                                {DBcheck.passwordCheck
+                                    ? DBcheck.passwordCheck === "loading"
+                                        ? <ActivityIndicator />
+                                        : <Ionicons name="md-lock" size={30} color="#347C2C"/*jungleGreen*/ />
+                                    : <Ionicons name="md-unlock" size={30} color="gray" />
+                                }
+                            </View>
+                        </View>
+                        <WarningText wordFor="passwordCheck" />
+                    </View>
+                }
+                {JoinSteps === 3
+                    && <View style={styles.container}>
+                        
+                    </View>
+                }
+                <View style={styles.submitContainer}>
+                    {StepProgress[JoinSteps] === "inProgress"
+                        ? <ActivityIndicator color="white" />
+                        : <TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
+                            <Text style={styles.submitText}>다음단계로</Text>
+                        </TouchableOpacity>
+                    }
+                </View>
                 <View style={styles.stepConSection}>
-                    {
-                        JoinSteps === 1
-                            ? <>
-                                <View style={styles.setpConButton} />
+                    {JoinSteps === 1
+                        ? <>
+                            <View style={styles.setpConButton} >{/** 공백용 */}</View>
+                            <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                                onPress={() => { _changeStep("next") }}>
+                                <Text style={styles.setpConText}>다음</Text>
+                                <Ionicons name="md-arrow-forward" size={30} color="black" />
+                            </TouchableOpacity>
+                        </>
+                        : JoinSteps === StepNum
+                            ? <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                                onPress={() => { _changeStep("prev") }}>
+                                <Ionicons name="md-arrow-back" size={30} color="black" />
+                                <Text style={styles.setpConText}>이전</Text>
+                            </TouchableOpacity>
+
+                            : <>
+                                <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                                    onPress={() => { _changeStep("prev") }}>
+                                    <Ionicons name="md-arrow-back" size={30} color="black" />
+                                    <Text style={styles.setpConText}>이전</Text>
+                                </TouchableOpacity>
                                 <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
                                     onPress={() => { _changeStep("next") }}>
                                     <Text style={styles.setpConText}>다음</Text>
                                     <Ionicons name="md-arrow-forward" size={30} color="black" />
                                 </TouchableOpacity>
                             </>
-                            : JoinSteps === StepNum
-                                ? <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                    onPress={() => { _changeStep("prev") }}>
-                                    <Ionicons name="md-arrow-back" size={30} color="black" />
-                                    <Text style={styles.setpConText}>이전</Text>
-                                </TouchableOpacity>
-
-                                : <>
-                                    <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                        onPress={() => { _changeStep("prev") }}>
-                                        <Ionicons name="md-arrow-back" size={30} color="black" />
-                                        <Text style={styles.setpConText}>이전</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                        onPress={() => { _changeStep("next") }}>
-                                        <Text style={styles.setpConText}>다음</Text>
-                                        <Ionicons name="md-arrow-forward" size={30} color="black" />
-                                    </TouchableOpacity>
-                                </>
                     }
                 </View>
-
-                {
-                    JoinSteps === StepNum &&
-                    <View style={styles.submitContainer}>
-                        <TouchableOpacity style={styles.submitButton}>
-                            <Text style={styles.submitText}>가입하기</Text>
-                        </TouchableOpacity>
-                    </View>
-                }
             </ScrollView>
 
             <View style={styles.footerContainer}>

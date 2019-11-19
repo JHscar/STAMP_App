@@ -28,7 +28,22 @@ export const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
     },
-    setps: {
+    stepWrap: {
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+    stepTag: {
+        // alignSelf: "flex-start",
+        marginTop: 3,
+        // marginLeft: 30,
+        padding: 5,
+        fontFamily: "jua",
+        fontSize: 12,
+        backgroundColor: "#B6B6B4", //Gray Cloud
+        borderRadius: 5,
+    },
+    steps: {
         justifyContent: "center",
         alignItems: "center",
         width: width * 0.08,
@@ -37,11 +52,11 @@ export const styles = StyleSheet.create({
         borderColor: "gray",
         borderWidth: 2,
     },
-    setpsText: {
+    stepsText: {
         fontFamily: "jua",
         color: "black"
     },
-    setpsSelected: {
+    stepsSelected: {
         justifyContent: "center",
         alignItems: "center",
         width: width * 0.08,
@@ -49,7 +64,7 @@ export const styles = StyleSheet.create({
         borderRadius: width * 0.04,
         backgroundColor: "gray"
     },
-    setpsSelectedText: {
+    stepsSelectedText: {
         fontFamily: "jua",
         color: "white"
     },
@@ -71,19 +86,9 @@ export const styles = StyleSheet.create({
         // 상태바 뺀 높이에서 - (로고영역) - (단계표시영역)
         // backgroundColor: "yellow"
     },
-    field: {
-        alignSelf: "flex-start",
-        marginTop: 10,
-        marginLeft: 30,
-        padding: 5,
-        fontFamily: "jua",
-        fontSize: 15,
-        backgroundColor: "#B6B6B4", //Gray Cloud
-        borderRadius: 5,
-    },
     inputSection: {
         flexDirection: "row",
-        marginVertical: 5,
+        marginTop: 10,
         alignItems: "center",
         width: "70%",
         height: 40,
@@ -102,6 +107,11 @@ export const styles = StyleSheet.create({
         backgroundColor: "#F0FFFF",
         paddingHorizontal: 10,
         marginHorizontal: 5,
+    },
+    inputWarning: {
+        backgroundColor: "yellow",
+        color: "gray",
+        fontSize: 10,
     },
     inputButton: {
         //위치
@@ -147,10 +157,11 @@ export const styles = StyleSheet.create({
     submitContainer: {
         alignSelf: "center",
         width: "70%",
-        height: width * 0.1,
+        height: width * 0.07,
         marginTop: 10,
         backgroundColor: "#4863A0", // Steel Blue
         borderRadius: width * 0.1,
+        justifyContent: "center",
     },
     submitButton: {
         flex: 1,
@@ -159,8 +170,8 @@ export const styles = StyleSheet.create({
     },
     submitText: {
         fontFamily: "jua",
-        fontSize: width * 0.1 * 0.5, // height의 절반
-        color: "#B6B6B4", //Gray Cloud
+        fontSize: width * 0.07 * 0.5, // height의 절반
+        color: "white",
     },
     /**
     * ==============================================================
