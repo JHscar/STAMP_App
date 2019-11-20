@@ -146,7 +146,7 @@ export default class MissionList extends Component {
 }
 
 MissionList.navigationOptions = {
-  title: '미션리스트',
+  header: null,
 };
 
 

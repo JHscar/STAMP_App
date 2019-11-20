@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Platform } from 'react-native';
+import { Platform, View, TouchableOpacity, Image } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import { createAppContainer } from 'react-navigation';
 import { createDrawerNavigator } from 'react-navigation-drawer';
@@ -12,44 +12,10 @@ import LinksScreen from '../screens/LinksScreen';
 import MissionList from '../screens/MissionPage/MissionList';
 import MissionView from '../screens/MissionPage/MissionView';
 
+import TestView from '../screens/Test/test';
 
 
-class DrawerNav extends Component {
-
-  toggleDrawer = () => {
-    this.props.navigationProps.toggleDrawer();
-  };
-
-  render() {
-    return (
-      <View style={{ flexDirection: 'row' }}>
-        <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
-          <Image
-            source={require('./assets/drawer.png')}
-            style={{ width: 25, height: 25, marginLeft: 5 }}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-}
-
-
-const DrawerTest = createStackNavigator({
-  First: {
-    screen: Screen1,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
-      headerStyle: {
-        backgroundColor: '#FF9800',
-      },
-      headerTintColor: '#fff',
-    }),
-  },
-});
-
-
+// 밑은 BottomNavigation
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
@@ -113,6 +79,40 @@ MissionListStack.navigationOptions = {
 MissionListStack.path = '';
 
 
+class NavigationDrawerStructure extends Component {
+
+  toggleDrawer = () => {
+    this.props.navigationProps.toggleDrawer();
+  };
+
+  render() {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <TouchableOpacity onPress={this.toggleDrawer.bind(this)}>
+          <Image
+            source={{ uri: './assets/images/drawer.png' }}
+            style={{ width: 25, height: 25, marginLeft: 5 }}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+}
+
+const Test_Drawer = createStackNavigator({
+  First: {
+    screen: TestView,
+    navigationOptions: ({ navigation }) => ({
+      headerLeft: <NavigationDrawerStructure navigationProps={navigation} />,
+      headerStyle: {
+        backgroundColor: '#FF9800',
+      },
+      headerTintColor: '#fff',
+    }),
+  },
+});
+
+
 const tabNavigator = createBottomTabNavigator({
   HomeStack,
   LinksStack,
@@ -121,4 +121,5 @@ const tabNavigator = createBottomTabNavigator({
 
 tabNavigator.path = '';
 
-export default tabNavigator;
+export default createAppContainer(tabNavigator);
+
