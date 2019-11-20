@@ -14,9 +14,9 @@ export default function LinksScreen() {
   );
 }
 
-LinksScreen.navigationOptions = {
-  header: null,
-};
+// LinksScreen.navigationOptions = {
+//   header: null,
+// };
 
 const styles = StyleSheet.create({
   container: {

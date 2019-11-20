@@ -145,9 +145,9 @@ export default class MissionList extends Component {
   }
 }
 
-MissionList.navigationOptions = {
-  header: null,
-};
+// MissionList.navigationOptions = {
+//   header: null,
+// };
 
 
 const styles = StyleSheet.create({
