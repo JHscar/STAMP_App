@@ -1,12 +1,28 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator, createStackNavigator } from 'react-navigation';
 
+
+// 인증 체크 
+import AuthChecker from '../screens/auth/AuthChecker';
+
+// 토큰 no -> 인증 체크 (fail) -> Auth Nav
+import Login from '../screens/auth/Login';
+import Join from '../screens/auth/Join';
+const AuthStack = createStackNavigator({ Login, Join });
+
+// 토큰 ok -> 인증 체크 (success) -> Main Nav
 import MainTabNavigator from './MainTabNavigator';
 
+
 export default createAppContainer(
-  createSwitchNavigator({
-    // You could add another route here for authentication.
-    // Read more at https://reactnavigation.org/docs/en/auth-flow.html
-    Main: MainTabNavigator,
-  })
+  createSwitchNavigator(
+    {
+      AuthChecker,
+      Auth: AuthStack,
+      Main: MainTabNavigator,
+    },
+    {
+      initialRouteName: "AuthChecker"
+    }
+  )
 );

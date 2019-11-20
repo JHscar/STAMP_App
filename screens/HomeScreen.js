@@ -1,6 +1,7 @@
 import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import {
+  AsyncStorage,
   Image,
   Platform,
   ScrollView,
@@ -12,7 +13,11 @@ import {
 
 import { MonoText } from '../components/StyledText';
 
-export default function HomeScreen() {
+export default function HomeScreen(props) {
+  const _logout = async () => {
+    await AsyncStorage.clear();
+    props.navigation.navigate("AuthChecker")
+  }
   return (
     <View style={styles.container}>
       <ScrollView
@@ -45,9 +50,9 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.helpContainer}>
-          <TouchableOpacity onPress={handleHelpPress} style={styles.helpLink}>
+          <TouchableOpacity onPress={_logout} style={styles.helpLink}>
             <Text style={styles.helpLinkText}>
-              Help, it didn’t automatically reload!
+              LOGOUT!!
             </Text>
           </TouchableOpacity>
         </View>
