@@ -22,7 +22,7 @@ export default createAppContainer(
       Main: MainTabNavigator,
     },
     {
-      initialRouteName: "AuthChecker"
+      initialRouteName: "Main"
     }
   )
 );
