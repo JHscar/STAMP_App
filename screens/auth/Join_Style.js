@@ -130,6 +130,22 @@ export const styles = StyleSheet.create({
     /**
      * ==============================================================
      */
+    authSection: {
+        marginTop: 10,
+        alignItems: "center",
+        justifyContent: "center",
+        width: "70%",
+        height: width * 0.7 * 0.5,
+        borderRadius: width * 0.7 * 0.5 * 0.1,
+        backgroundColor: "#FFF8DC", // Cornsilk
+    },
+    authText: {
+        marginVertical: 3,
+        fontFamily: "jua",
+    },
+    /**
+     * ==============================================================
+     */
     stepConSection: {
         alignSelf: "center",
         marginTop: 20,
@@ -158,7 +174,7 @@ export const styles = StyleSheet.create({
         alignSelf: "center",
         width: "70%",
         height: width * 0.07,
-        marginTop: 10,
+        marginTop: 15,
         backgroundColor: "#4863A0", // Steel Blue
         borderRadius: width * 0.1,
         justifyContent: "center",

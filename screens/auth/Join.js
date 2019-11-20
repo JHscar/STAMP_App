@@ -18,7 +18,7 @@ export default Join = (props) => {
     // const { navigation } = props;
     // console.log(Keyboard.);
     const DBdata = [
-        { name: "김", email: "kim@email.com", phone_num: "01012340001", id: "kim", password: "!234Qwer" },
+        { name: "김", email: "kim@email.com", phone_num: "01012340001", id: "kim", password: "!234Qwer", auth: "4321" },
         { name: "이", email: "lee@email.com", phone_num: "01012340002", id: "lee", password: "!234Qwer" },
         { name: "박", email: "park@email.com", phone_num: "01012340003", id: "park", password: "!234Qwer" },
     ];
@@ -47,11 +47,13 @@ export default Join = (props) => {
     */
     const [PersonalInfo, setPersonalInfo] = useState({ name: "", email: "", phone_num: "" });
     const [UserInfo, setUserInfo] = useState({ id: "", password: "", passwordCheck: "" });
+    const [AuthNo, setAuthNo] = useState("");
 
     const _userInputs = (text, type, key) => { // 입력값 갱신용  
-        //text는 입력값, type은 PersonalInfo ="P" UserInfo ="U",key는 바꿀 대상
+        //text는 입력값, type은 PersonalInfo ="P" UserInfo ="U",key는 바꿀 대상 Auth ="A"
         type == "P" && setPersonalInfo({ ...PersonalInfo, [key]: text });
         type == "U" && setUserInfo({ ...UserInfo, [key]: text });
+        type == "A" && setAuthNo(text);
     };
 
     const [Warning, setWarning] = useState({  // 입력값 검증 결과 _w는 word, _c는 color
@@ -67,6 +69,8 @@ export default Join = (props) => {
         password_c: null,
         passwordCheck_w: "같은 [ 비밀번호 ] 를 한번 더 입력하세요.",
         passwordCheck_c: null,
+        auth_w: "이메일로 받은 인증번호 4자리를 입력하세요.",
+        auth_c: null,
 
     });
 
@@ -97,19 +101,26 @@ export default Join = (props) => {
             const idRule = /([_]?[0-9a-zA-Z가-힣]){3,}/; // _가능, 3자 이상
             idRule.test(id)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : id.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+                : id.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" });
         }
         if (type === "U" && key === "password") {
             const passwordRule = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&+=]).*$/; // 특수문자 / 문자 / 숫자 포함 형태의 8~15자리 이내의 암호
             passwordRule.test(password)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : password.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+                : password.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.  ( 8~15 자 / 특수문자 + 숫자 + 대소문자 )", [key + "_c"]: "red" });
         }
         if (type === "U" && key === "passwordCheck") {
             passwordCheck === password
                 ? passwordCheck.length > 0 && setWarning({ ...Warning, [key + "_w"]: "일치합니다.", [key + "_c"]: "blue" })
                 : passwordCheck.length > 0 && setWarning({ ...Warning, [key + "_w"]: "입력하신 비밀번호와 일치하지 않습니다.", [key + "_c"]: "red" });
 
+        }
+
+        if (type === "A") {
+            const authRule = /^([0-9]{4})$/;
+            authRule.test(AuthNo)
+                ? setWarning({ ...Warning, ["auth_w"]: "올바른 형식입니다.", ["auth_c"]: "blue" })
+                : AuthNo.length > 0 && setWarning({ ...Warning, ["auth_w"]: "숫자 4자리를 입력하세요.", ["auth_c"]: "red" })
         }
 
     };
@@ -121,6 +132,7 @@ export default Join = (props) => {
     useEffect(() => { _validate("U", "password"); _dbChecker("C", "password") }, [UserInfo.password]);
     useEffect(() => { _validate("U", "passwordCheck"); _dbChecker("C", "passwordCheck") }, [UserInfo.passwordCheck]);
 
+    useEffect(() => { _validate("A", ""); _dbChecker("A", "clear") }, [AuthNo]);
     // *** Warning Component ***
     const WarningText = ({ wordFor }) => {
         return (
@@ -130,7 +142,7 @@ export default Join = (props) => {
         )
     }
     // *** DB check ***
-    const [DBcheck, setDBcheck] = useState({ name: false, email: false, phone_num: false, id: false, password: false, passwordCheck: false });
+    const [DBcheck, setDBcheck] = useState({ name: false, email: false, phone_num: false, id: false, password: false, passwordCheck: false, auth: false });
     const _dbChecker = async (type, key) => {  // type:C = clear
         // console.log(Warning[key + "_c"]); // 디버그용
         if (Warning[key + "_c"] == "blue") { // 입력값 검증 통과 한 것만 
@@ -168,6 +180,18 @@ export default Join = (props) => {
             }
         }
         if (type === "C" && DBcheck[key] === true) { setDBcheck({ ...DBcheck, [key]: false }); }
+
+        // Auth DB check API
+        if (type === "A") {
+            if (key === "clear" && DBcheck.auth === true) { setDBcheck({ ...DBcheck, ["auth"]: false }); }
+            if (key === "input") {
+                setDBcheck({ ...DBcheck, ["auth"]: "loading" });
+                const result = await DBdata.find(data => data.email === PersonalInfo.email && data["auth"] === AuthNo);
+                (result != null)
+                    ? [setDBcheck({ ...DBcheck, ["auth"]: true }), setWarning({ ...Warning, ["auth_w"]: "인증되었습니다." })]
+                    : [setWarning({ ...Warning, ["auth_w"]: "인증번호가 틀렸습니다.", ["auth_c"]: "red" })]
+            }
+        }
     }
     //////////
 
@@ -179,17 +203,24 @@ export default Join = (props) => {
     const StepNum = 3;
     const stepTag = ["개인정보", "계정정보", "인증하기"];
     const [StepProgress, setStepProgress] = useState({ 1: "inProgress", 2: "inProgress" });
-    // const stepProgress = ["inProgress", "inProgress"];
     useEffect(() => {
         // console.log(DBcheck);  // 디버그용
         // console.log(StepProgress); // 디버그용
-        (DBcheck.email && DBcheck.phone_num && Warning.name_c === "blue")
-            ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
-            : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
-
-        (DBcheck.id && DBcheck.password && DBcheck.passwordCheck)
-            ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
-            : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+        if (JoinSteps === 1) {
+            (DBcheck.name === true && DBcheck.email === true && DBcheck.phone_num === true)
+                ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
+                : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+        }
+        if (JoinSteps === 2) {
+            (DBcheck.id === true && DBcheck.password === true && DBcheck.passwordCheck === true)
+                ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
+                : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+        }
+        if (JoinSteps === 3) {
+            (DBcheck.auth === true)
+                ? setStepProgress({ ...StepProgress, [JoinSteps]: "done" })
+                : StepProgress[JoinSteps] === "done" && setStepProgress({ ...StepProgress, [JoinSteps]: "inProgress" });
+        }
     }, [DBcheck])
     const [JoinSteps, setJoinSteps] = useState(1);
     const StepsBar = ({ stepNum, step }) => { // component
@@ -381,17 +412,60 @@ export default Join = (props) => {
                 }
                 {JoinSteps === 3
                     && <View style={styles.container}>
-                        
+                        <View style={styles.authSection}>
+                            <Text style={[styles.authText]}>{PersonalInfo.name} 님,</Text>
+                            <Text style={[styles.authText]}>
+                                <Text style={[styles.authText, { color: "#E55B3C" }]}>STAMP</Text>가입을 환영합니다.
+                            </Text>
+                            <Text style={[styles.authText, { color: "blue" }]}>{PersonalInfo.email}</Text>
+                            <Text style={[styles.authText]}>로 전송된 <Text style={[styles.authText, { color: "red" }]}>인증번호</Text>를 입력하세요.</Text>
+                        </View>
+                        <View style={styles.inputSection}>
+                            <View style={styles.iconWrap}>
+                                <Ionicons name="md-mail" size={30} color="black" />
+                            </View>
+                            <TextInput
+                                style={styles.inputText}
+                                placeholder="인증번호 (4자리)"
+                                placeholderTextColor="gray"
+                                // returnKeyType="next"
+                                // blurOnSubmit={false}
+                                // onSubmitEditing={() => step2_2stRef.focus()}
+                                value={AuthNo}
+                                onChangeText={(text) => { _userInputs(text, "A", "") }}
+                                onEndEditing={() => { _dbChecker("A", "input") }}
+                            />
+                            <View style={styles.iconWrap}>
+                                {DBcheck.auth
+                                    ? DBcheck.auth === "loading"
+                                        ? <ActivityIndicator />
+                                        : <Ionicons name="md-checkbox-outline" size={30} color="#347C2C"/*jungleGreen*/ />
+                                    : <Ionicons name="md-square-outline" size={30} color="gray" />
+                                }
+                            </View>
+                        </View>
+                        <WarningText wordFor="auth" />
                     </View>
                 }
-                <View style={styles.submitContainer}>
-                    {StepProgress[JoinSteps] === "inProgress"
-                        ? <ActivityIndicator color="white" />
-                        : <TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
-                            <Text style={styles.submitText}>다음단계로</Text>
-                        </TouchableOpacity>
-                    }
-                </View>
+                {JoinSteps === StepNum
+                    ? <View style={styles.submitContainer}>
+                        {StepProgress[JoinSteps] == "done"
+                            ? (<TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
+                                <Text style={styles.submitText}>로그인 하러가기</Text>
+                            </TouchableOpacity>)
+                            : <ActivityIndicator color="white" />
+                        }
+                    </View>
+                    : <View style={styles.submitContainer}>
+                        {StepProgress[JoinSteps] == "done"
+                            ? (<TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
+                                <Text style={styles.submitText}>다음단계로</Text>
+                            </TouchableOpacity>)
+                            : <ActivityIndicator color="white" />
+                        }
+                    </View>
+                }
+
                 <View style={styles.stepConSection}>
                     {JoinSteps === 1
                         ? <>
