@@ -11,12 +11,12 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import axios from 'axios';
 import { styles } from './Join_Style';
 import { Ionicons } from '@expo/vector-icons';
 
 export default Join = (props) => {
-    // const { navigation } = props;
-    // console.log(Keyboard.);
+    const { navigation } = props;
     const DBdata = [
         { name: "김", email: "kim@email.com", phone_num: "01012340001", id: "kim", password: "!234Qwer", auth: "4321" },
         { name: "이", email: "lee@email.com", phone_num: "01012340002", id: "lee", password: "!234Qwer" },
@@ -142,6 +142,20 @@ export default Join = (props) => {
         )
     }
     // *** DB check ***
+    const baseURL = "https://stamp-test-server.herokuapp.com";
+
+    // 중복확인 API 함수
+    const _checkDuplicateInDB = async (type, key) => {  //  user:id / personal:email,phone_num
+        if (type === "P") {
+            const { data: Checker } = await axios.get(`${baseURL}/auth/${key}/?${key}=${PersonalInfo[key]}`);
+            return (Checker.result);
+        }
+        if (type === "U") {
+            const { data: Checker } = await axios.get(`${baseURL}/auth/${key}/?${key}=${UserInfo[key]}`);
+            return (Checker.result);
+        }
+    };
+
     const [DBcheck, setDBcheck] = useState({ name: false, email: false, phone_num: false, id: false, password: false, passwordCheck: false, auth: false });
     const _dbChecker = async (type, key) => {  // type:C = clear
         // console.log(Warning[key + "_c"]); // 디버그용
@@ -153,9 +167,10 @@ export default Join = (props) => {
                 }
 
                 setDBcheck({ ...DBcheck, [key]: "loading" });
-                // API
-                const result = await DBdata.find(data => data[key] === PersonalInfo[key]);
-                (result == null)
+                // API 호출 (중복확인)
+                const result = await _checkDuplicateInDB(type, key);
+                // console.log("중복확인", result); // 디버그용
+                (result)
                     ? [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })]
                     : [setWarning({ ...Warning, [key + "_w"]: "이미 사용중 입니다.", [key + "_c"]: "red" })]
             }
@@ -172,9 +187,9 @@ export default Join = (props) => {
                     return;
                 }
                 setDBcheck({ ...DBcheck, [key]: "loading" });
-                // API
-                const result = await DBdata.find(data => data[key] === UserInfo[key]);
-                (result == null)
+                // API 호출 (중복확인)
+                const result = await _checkDuplicateInDB(type, key);
+                (result)
                     ? [setDBcheck({ ...DBcheck, [key]: true }), setWarning({ ...Warning, [key + "_w"]: "사용가능" })]
                     : [setWarning({ ...Warning, [key + "_w"]: "이미 사용중 입니다.", [key + "_c"]: "red" })]
             }
@@ -186,8 +201,9 @@ export default Join = (props) => {
             if (key === "clear" && DBcheck.auth === true) { setDBcheck({ ...DBcheck, ["auth"]: false }); }
             if (key === "input") {
                 setDBcheck({ ...DBcheck, ["auth"]: "loading" });
-                const result = await DBdata.find(data => data.email === PersonalInfo.email && data["auth"] === AuthNo);
-                (result != null)
+                // API 호출
+                const result = await _emailAuthAPI();
+                (result)
                     ? [setDBcheck({ ...DBcheck, ["auth"]: true }), setWarning({ ...Warning, ["auth_w"]: "인증되었습니다." })]
                     : [setWarning({ ...Warning, ["auth_w"]: "인증번호가 틀렸습니다.", ["auth_c"]: "red" })]
             }
@@ -239,7 +255,7 @@ export default Join = (props) => {
             ))}
         </>)
     }
-    const _changeStep = (direct) => {
+    const _changeStep = (direct) => {  //  디버그용
         if (JoinSteps === 1) {
             if (direct === "prev") alert("첫페이지 입니다.");
             if (direct === "next") setJoinSteps(JoinSteps + 1);
@@ -249,6 +265,73 @@ export default Join = (props) => {
         };
     }
     //////////
+    /**
+     * ============================================================================================================================
+     *          Join & Auth API
+     * ============================================================================================================================ 
+     */
+    const _joinAPI = async () => {
+        const { name, email, phone_num } = PersonalInfo;  // 비구조화
+        const { id, password } = UserInfo;
+
+        const { data } = await axios.post(
+            `${baseURL}/auth/join`,
+            { name, email, phone_num, id, password }
+        );
+        console.log(data);
+        await _emailAuthReq();
+        _changeStep("next");
+    };
+
+    const exTime = 50000; // 미리세컨드
+    const [MailExpire, setMailExpire] = useState(exTime); // 인증 유효 시간
+    const [MailReqBtn, setMailReqBtn] = useState(true); // 메일요청 버튼 활성화
+    const [ExClock, setExClock] = useState("3:00")
+    useEffect(() => {
+        const min = (Math.floor(MailExpire / 60000)).toString();
+        const sec = (((MailExpire % 60000) / 1000).toFixed(0)).toString();
+        const leftTime = min + ":" + (sec < 10 ? "0" : "") + sec;
+        setExClock(leftTime);
+    }, [MailExpire])
+
+    const _emailAuthReq = async () => {
+        const { email } = PersonalInfo;  // 비구조화
+
+        setMailReqBtn(false); // 버튼 비활서화
+
+        const { data } = await axios.post( // 메일 발송 요청 API
+            `${baseURL}/auth/emailAuth`,
+            { email }
+        );
+
+        const expireCnt = setInterval(() => { // 발송된 후 인증시간 카운트
+            console.log("-1초")
+            setMailExpire(MailExpire => MailExpire - 1000);
+        }, 1000);
+
+        setTimeout(() => {   // 인증시간 만료되면 interval 삭제, 버튼 확성화, 인증시간 초기화
+            clearInterval(expireCnt);
+            setMailReqBtn(true);
+            setMailExpire(exTime);
+            console.log("인증 만료!")
+        }, exTime);
+
+        console.log(data);
+    }
+
+    const _emailAuthAPI = async () => {
+        const { email } = PersonalInfo;  // 비구조화
+
+        const { data } = await axios.post(
+            `${baseURL}/auth/emailAuth/emailCheck`,
+            {
+                email,
+                inputAuthNo: AuthNo
+            }
+        );
+        return (data.result);
+    }
+
     return (
         <>
             <ScrollView >
@@ -420,6 +503,10 @@ export default Join = (props) => {
                             <Text style={[styles.authText, { color: "blue" }]}>{PersonalInfo.email}</Text>
                             <Text style={[styles.authText]}>로 전송된 <Text style={[styles.authText, { color: "red" }]}>인증번호</Text>를 입력하세요.</Text>
                         </View>
+                        {MailReqBtn
+                            ? <Button title="메일 다시 요청" onPress={_emailAuthReq} />
+                            : <Text style={{ color:"red" }}>{ExClock}</Text>
+                        }
                         <View style={styles.inputSection}>
                             <View style={styles.iconWrap}>
                                 <Ionicons name="md-mail" size={30} color="black" />
@@ -447,16 +534,8 @@ export default Join = (props) => {
                         <WarningText wordFor="auth" />
                     </View>
                 }
-                {JoinSteps === StepNum
-                    ? <View style={styles.submitContainer}>
-                        {StepProgress[JoinSteps] == "done"
-                            ? (<TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
-                                <Text style={styles.submitText}>로그인 하러가기</Text>
-                            </TouchableOpacity>)
-                            : <ActivityIndicator color="white" />
-                        }
-                    </View>
-                    : <View style={styles.submitContainer}>
+                {JoinSteps === 1
+                    && <View style={styles.submitContainer}>
                         {StepProgress[JoinSteps] == "done"
                             ? (<TouchableOpacity style={styles.submitButton} onPress={() => { _changeStep("next") }}>
                                 <Text style={styles.submitText}>다음단계로</Text>
@@ -465,39 +544,60 @@ export default Join = (props) => {
                         }
                     </View>
                 }
+                {JoinSteps === 2
+                    && <View style={styles.submitContainer}>
+                        {StepProgress[JoinSteps] == "done"
+                            ? (<TouchableOpacity style={styles.submitButton} onPress={_joinAPI}>
+                                <Text style={styles.submitText}>회원가입</Text>
+                            </TouchableOpacity>)
+                            : <ActivityIndicator color="white" />
+                        }
+                    </View>
+                }
+                {JoinSteps === 3
+                    && <View style={styles.submitContainer}>
+                        {StepProgress[JoinSteps] == "done"
+                            ? (<TouchableOpacity style={styles.submitButton} onPress={() => { navigation.navigate("Login") }}>
+                                <Text style={styles.submitText}>로그인 하러가기</Text>
+                            </TouchableOpacity>)
+                            : <ActivityIndicator color="white" />
+                        }
+                    </View>
+                }
 
-                <View style={styles.stepConSection}>
-                    {JoinSteps === 1
-                        ? <>
-                            <View style={styles.setpConButton} >{/** 공백용 */}</View>
+            </ScrollView>
+            {/* 디버그용 페이지 이동 버튼 */}
+            <View style={styles.stepConSection}>
+                {JoinSteps === 1
+                    ? <>
+                        <View style={styles.setpConButton} >{/** 공백용 */}</View>
+                        <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                            onPress={() => { _changeStep("next") }}>
+                            <Text style={styles.setpConText}>다음</Text>
+                            <Ionicons name="md-arrow-forward" size={30} color="white" />
+                        </TouchableOpacity>
+                    </>
+                    : JoinSteps === StepNum
+                        ? <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                            onPress={() => { _changeStep("prev") }}>
+                            <Ionicons name="md-arrow-back" size={30} color="white" />
+                            <Text style={styles.setpConText}>이전</Text>
+                        </TouchableOpacity>
+
+                        : <>
+                            <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
+                                onPress={() => { _changeStep("prev") }}>
+                                <Ionicons name="md-arrow-back" size={30} color="white" />
+                                <Text style={styles.setpConText}>이전</Text>
+                            </TouchableOpacity>
                             <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
                                 onPress={() => { _changeStep("next") }}>
                                 <Text style={styles.setpConText}>다음</Text>
-                                <Ionicons name="md-arrow-forward" size={30} color="black" />
+                                <Ionicons name="md-arrow-forward" size={30} color="white" />
                             </TouchableOpacity>
                         </>
-                        : JoinSteps === StepNum
-                            ? <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                onPress={() => { _changeStep("prev") }}>
-                                <Ionicons name="md-arrow-back" size={30} color="black" />
-                                <Text style={styles.setpConText}>이전</Text>
-                            </TouchableOpacity>
-
-                            : <>
-                                <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                    onPress={() => { _changeStep("prev") }}>
-                                    <Ionicons name="md-arrow-back" size={30} color="black" />
-                                    <Text style={styles.setpConText}>이전</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity activeOpacity={.5} style={styles.setpConButton}
-                                    onPress={() => { _changeStep("next") }}>
-                                    <Text style={styles.setpConText}>다음</Text>
-                                    <Ionicons name="md-arrow-forward" size={30} color="black" />
-                                </TouchableOpacity>
-                            </>
-                    }
-                </View>
-            </ScrollView>
+                }
+            </View>
 
             <View style={styles.footerContainer}>
                 <Text style={styles.copyrightText}>ⓒ 2019. STAMP .All right reserved.</Text>

@@ -166,6 +166,7 @@ export const styles = StyleSheet.create({
     },
     setpConText: {
         marginHorizontal: 5,
+        color:"white"
     },
     /**
     * ==============================================================
