@@ -2,7 +2,7 @@ import React from "react";
 import { AsyncStorage, View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-export default class Screen extends React.Component {
+export default class wallet extends React.Component {
     render() {
 
         _logout = () => {
