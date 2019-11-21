@@ -4,23 +4,42 @@ const { width, height } = Dimensions.get("window");
 const statusBarH = StatusBar.currentHeight;
 
 
+const colorSet = {
+    Cornsilk: "#FFF8DC", //연한 노란색
+    Mauve: "#E0B0FF", //연한 보라색
+    GrayCloud: "#B6B6B4" // 조금 진한 회색
+}
+
 export const styles = StyleSheet.create({
     /**
      * ==============================================================
-     * 상태바 높이 & 로딩
+     * 상태바 높이
      */
     statusHeight: {
         marginTop: statusBarH,
+        // backgroundColor: colorSet.Cornsilk,
     },
+    // 로딩
     loading: {
-        // flex: 1,
-        // position: "absolute",
-        // alignSelf: "center",
         width,
         height: height,
-        backgroundColor: "rgba(220,220,220,0.5)",
-        justifyContent: "center",
+        resizeMode: "cover",
+        // justifyContent: "center",
         alignItems: "center",
+    },
+    loadContainer: {
+        marginTop: height * 0.6,
+        width: "50%",
+        height: width * 0.25,
+        backgroundColor: colorSet.Mauve,
+        borderRadius: width * 0.25,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    loadText: {
+        fontFamily: "jua",
+        fontSize: width * 0.25 * 0.25, // 높이의 1/4
+        // color: colorSet.Cornsilk
     },
     /**
      * ==============================================================
@@ -30,10 +49,10 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width,
-        height: 250,
-        backgroundColor: "red",
+        // height: 250,
     },
     logo: {
+        width,
         height: "100%",
         resizeMode: "cover"
     },
@@ -41,19 +60,19 @@ export const styles = StyleSheet.create({
      * ==============================================================
      * 환영문구
      */
-    welcomeSection: {
-        marginTop: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        width: "70%",
-        height: width * 0.7 * 0.5,
-        borderRadius: width * 0.7 * 0.5 * 0.1,
-        backgroundColor: "#FFF8DC", // Cornsilk
-    },
-    welcomeText: {
-        marginVertical: 3,
-        fontFamily: "jua",
-    },
+    // welcomeSection: {
+    //     marginTop: 10,
+    //     alignItems: "center",
+    //     justifyContent: "center",
+    //     width: "70%",
+    //     height: width * 0.7 * 0.5,
+    //     borderRadius: width * 0.7 * 0.5 * 0.1,
+    //     backgroundColor: colorSet.Mauve
+    // },
+    // welcomeText: {
+    //     marginVertical: 3,
+    //     fontFamily: "jua",
+    // },
     /**
      * ==============================================================
      * 메인영역
@@ -64,72 +83,6 @@ export const styles = StyleSheet.create({
         alignItems: "center", // 좌우
         width,
     },
-
-
-
-
-
-
-
-
-    stepsBar: {
-        alignSelf: "center",
-        marginTop: 10,
-        flexDirection: "row",
-        width: "70%",
-        justifyContent: "space-between",
-        alignItems: "center",
-    },
-    stepWrap: {
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    stepTag: {
-        // alignSelf: "flex-start",
-        marginTop: 3,
-        // marginLeft: 30,
-        padding: 5,
-        fontFamily: "jua",
-        fontSize: 12,
-        backgroundColor: "#B6B6B4", //Gray Cloud
-        borderRadius: 5,
-    },
-    steps: {
-        justifyContent: "center",
-        alignItems: "center",
-        width: width * 0.08,
-        height: width * 0.08,
-        borderRadius: width * 0.04,
-        borderColor: "gray",
-        borderWidth: 2,
-    },
-    stepsText: {
-        fontFamily: "jua",
-        color: "black"
-    },
-    stepsSelected: {
-        justifyContent: "center",
-        alignItems: "center",
-        width: width * 0.08,
-        height: width * 0.08,
-        borderRadius: width * 0.04,
-        backgroundColor: "gray"
-    },
-    stepsSelectedText: {
-        fontFamily: "jua",
-        color: "white"
-    },
-    stepDash: {
-        width: width * 0.08,
-        height: width * 0.08 * 0.1,
-        borderRadius: 3,
-        backgroundColor: "#D1D0CE", // Gray Goose
-    },
-    /**
-     * ==============================================================
-     */
-
     inputSection: {
         flexDirection: "row",
         marginTop: 10,
@@ -157,62 +110,26 @@ export const styles = StyleSheet.create({
         color: "gray",
         fontSize: 10,
     },
-    inputButton: {
-        //위치
-        alignSelf: "flex-end",
-        marginRight: width * 0.15,
-        //크기
-        height: 30,
-        //스타일
-        borderRadius: 5,
-        backgroundColor: "gray",
-        //내부
-        justifyContent: "center",
-        alignItems: "center",
-        paddingHorizontal: 3,
-    },
-    
-    /**
-     * ==============================================================
-     */
-    stepConSection: {
-        alignSelf: "center",
-        marginTop: 20,
-        flexDirection: "row",
-        width: "70%",
-        height: width * 0.08,
-        justifyContent: "space-between",
-        alignItems: "center",
-        // backgroundColor: "yellow"
-    },
-    setpConButton: {
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "15%",
-        height: "100%",
-        marginHorizontal: 5,
-    },
-    setpConText: {
-        marginHorizontal: 5,
-        color: "white"
-    },
     /**
     * ==============================================================
+    * 하단버튼
     */
     submitContainer: {
         alignSelf: "center",
         width: "70%",
+        flexDirection: "row",
         height: width * 0.07,
         marginTop: 15,
-        backgroundColor: "#4863A0", // Steel Blue
         borderRadius: width * 0.1,
-        justifyContent: "center",
+        justifyContent: "space-around",
     },
     submitButton: {
-        flex: 1,
+        // flex: 1,
+        width: "45%",
+        borderRadius: width * 0.07,
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#4863A0", // Steel Blue
     },
     submitText: {
         fontFamily: "jua",
@@ -221,15 +138,124 @@ export const styles = StyleSheet.create({
     },
     /**
     * ==============================================================
+    * 푸터 (카피라이트)
     */
     footerContainer: {
-        // alignSelf: "flex-end",
         justifyContent: "center",
         alignItems: "center",
-        // backgroundColor: "yellow",
+        // backgroundColor: colorSet.Cornsilk,
     },
     copyrightText: {
         fontFamily: "jua",
-        color: "#B6B6B4", //Gray Cloud
+        color: colorSet.GrayCloud
     },
+
+
+
+
+
+
+
+
+    // stepsBar: {
+    //     alignSelf: "center",
+    //     marginTop: 10,
+    //     flexDirection: "row",
+    //     width: "70%",
+    //     justifyContent: "space-between",
+    //     alignItems: "center",
+    // },
+    // stepWrap: {
+    //     flexDirection: "column",
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    // },
+    // stepTag: {
+    //     // alignSelf: "flex-start",
+    //     marginTop: 3,
+    //     // marginLeft: 30,
+    //     padding: 5,
+    //     fontFamily: "jua",
+    //     fontSize: 12,
+    //     backgroundColor: "#B6B6B4", //Gray Cloud
+    //     borderRadius: 5,
+    // },
+    // steps: {
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     width: width * 0.08,
+    //     height: width * 0.08,
+    //     borderRadius: width * 0.04,
+    //     borderColor: "gray",
+    //     borderWidth: 2,
+    // },
+    // stepsText: {
+    //     fontFamily: "jua",
+    //     color: "black"
+    // },
+    // stepsSelected: {
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     width: width * 0.08,
+    //     height: width * 0.08,
+    //     borderRadius: width * 0.04,
+    //     backgroundColor: "gray"
+    // },
+    // stepsSelectedText: {
+    //     fontFamily: "jua",
+    //     color: "white"
+    // },
+    // stepDash: {
+    //     width: width * 0.08,
+    //     height: width * 0.08 * 0.1,
+    //     borderRadius: 3,
+    //     backgroundColor: "#D1D0CE", // Gray Goose
+    // },
+    // /**
+    //  * ==============================================================
+    //  */
+
+
+    // inputButton: {
+    //     //위치
+    //     alignSelf: "flex-end",
+    //     marginRight: width * 0.15,
+    //     //크기
+    //     height: 30,
+    //     //스타일
+    //     borderRadius: 5,
+    //     backgroundColor: "gray",
+    //     //내부
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     paddingHorizontal: 3,
+    // },
+
+    // /**
+    //  * ==============================================================
+    //  */
+    // stepConSection: {
+    //     alignSelf: "center",
+    //     marginTop: 20,
+    //     flexDirection: "row",
+    //     width: "70%",
+    //     height: width * 0.08,
+    //     justifyContent: "space-between",
+    //     alignItems: "center",
+    //     // backgroundColor: "yellow"
+    // },
+    // setpConButton: {
+    //     flexDirection: "row",
+    //     justifyContent: "center",
+    //     alignItems: "center",
+    //     width: "15%",
+    //     height: "100%",
+    //     marginHorizontal: 5,
+    // },
+    // setpConText: {
+    //     marginHorizontal: 5,
+    //     color: "white"
+    // },
+
+
 });

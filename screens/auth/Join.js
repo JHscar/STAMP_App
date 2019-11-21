@@ -17,11 +17,15 @@ import { Ionicons } from '@expo/vector-icons';
 
 export default Join = (props) => {
     const { navigation } = props;
-    const DBdata = [
-        { name: "김", email: "kim@email.com", phone_num: "01012340001", id: "kim", password: "!234Qwer", auth: "4321" },
-        { name: "이", email: "lee@email.com", phone_num: "01012340002", id: "lee", password: "!234Qwer" },
-        { name: "박", email: "park@email.com", phone_num: "01012340003", id: "park", password: "!234Qwer" },
-    ];
+
+    /**
+    * ============================================================================================================================
+    *          loding state
+    * ============================================================================================================================ 
+    */
+    const [isLoading, setisLoading] = useState(false);
+    //////////
+
     /**
      * ============================================================================================================================
      *          Keyboard Height Event
@@ -83,25 +87,25 @@ export default Join = (props) => {
             const nameRule = /^([가-힣]){1,}$/; // 한글만
             nameRule.test(name)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : name.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다", [key + "_c"]: "red" });
+                : name.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다. ( 한글 이름을 입력하세요. )", [key + "_c"]: "red" });
         }
         if (type === "P" && key === "email") {
             const emailRule = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
             emailRule.test(email)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : email.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" })
+                : email.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다. ( 이메일 양식을 확인하세요. )", [key + "_c"]: "red" })
         }
         if (type === "P" && key === "phone_num") {
             const phoneRule = /^01([0|1|6|7|8|9]?)([0-9]{3,4})([0-9]{4})$/;
             phoneRule.test(phone_num)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : phone_num.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" })
+                : phone_num.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다. ( 휴대폰 번호 양식을 확인하세요. )", [key + "_c"]: "red" })
         }
         if (type === "U" && key === "id") {
             const idRule = /([_]?[0-9a-zA-Z가-힣]){3,}/; // _가능, 3자 이상
             idRule.test(id)
                 ? setWarning({ ...Warning, [key + "_w"]: "올바른 형식입니다.", [key + "_c"]: "blue" })
-                : id.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다.", [key + "_c"]: "red" });
+                : id.length > 0 && setWarning({ ...Warning, [key + "_w"]: "올바르지 않은 형식입니다. ( 3자 이상, _ 허용 4자 이상 )", [key + "_c"]: "red" });
         }
         if (type === "U" && key === "password") {
             const passwordRule = /^.*(?=^.{8,15}$)(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&+=]).*$/; // 특수문자 / 문자 / 숫자 포함 형태의 8~15자리 이내의 암호
@@ -271,6 +275,7 @@ export default Join = (props) => {
      * ============================================================================================================================ 
      */
     const _joinAPI = async () => {
+        setisLoading(true); // 로딩시작
         const { name, email, phone_num } = PersonalInfo;  // 비구조화
         const { id, password } = UserInfo;
 
@@ -278,15 +283,22 @@ export default Join = (props) => {
             `${baseURL}/auth/join`,
             { name, email, phone_num, id, password }
         );
+        if (data.result === true) {
+            await _emailAuthReq();
+            setisLoading(false); // 로딩 끝
+            _changeStep("next");
+        } else {
+            alert("잘못된 접근입니다.");
+            navigation.navigate("Join")
+        }
         console.log(data);
-        await _emailAuthReq();
-        _changeStep("next");
     };
 
     const exTime = 50000; // 미리세컨드
     const [MailExpire, setMailExpire] = useState(exTime); // 인증 유효 시간
     const [MailReqBtn, setMailReqBtn] = useState(true); // 메일요청 버튼 활성화
-    const [ExClock, setExClock] = useState("3:00")
+    const [ExClock, setExClock] = useState("3:00");
+    const [expireCnt, setexpireCnt] = useState();
     useEffect(() => {
         const min = (Math.floor(MailExpire / 60000)).toString();
         const sec = (((MailExpire % 60000) / 1000).toFixed(0)).toString();
@@ -297,25 +309,34 @@ export default Join = (props) => {
     const _emailAuthReq = async () => {
         const { email } = PersonalInfo;  // 비구조화
 
-        setMailReqBtn(false); // 버튼 비활서화
+        setMailReqBtn(false); // 버튼 비활성화
 
         const { data } = await axios.post( // 메일 발송 요청 API
             `${baseURL}/auth/emailAuth`,
             { email }
         );
+        if (data.result === true) {
+            setexpireCnt(
+                setInterval(() => { // 발송된 후 인증시간 카운트
+                    console.log("-1초")
+                    setMailExpire(MailExpire => MailExpire - 1000);
+                }, 1000)
+            );
+            // expireCnt = setInterval(() => { // 발송된 후 인증시간 카운트
+            //     console.log("-1초")
+            //     setMailExpire(MailExpire => MailExpire - 1000);
+            // }, 1000);
 
-        const expireCnt = setInterval(() => { // 발송된 후 인증시간 카운트
-            console.log("-1초")
-            setMailExpire(MailExpire => MailExpire - 1000);
-        }, 1000);
-
-        setTimeout(() => {   // 인증시간 만료되면 interval 삭제, 버튼 확성화, 인증시간 초기화
-            clearInterval(expireCnt);
-            setMailReqBtn(true);
-            setMailExpire(exTime);
-            console.log("인증 만료!")
-        }, exTime);
-
+            setTimeout(() => {   // 인증시간 만료되면 interval 삭제, 버튼 확성화, 인증시간 초기화
+                clearInterval(expireCnt);
+                setMailReqBtn(true);
+                setMailExpire(exTime);
+                console.log("인증 만료!")
+            }, exTime);
+        } else {
+            alert("잘못된 접근 입니다.");
+            navigation.navigate(Join);
+        }
         console.log(data);
     }
 
@@ -329,6 +350,9 @@ export default Join = (props) => {
                 inputAuthNo: AuthNo
             }
         );
+        if (data.result === true) {
+            clearInterval(expireCnt);
+        }
         return (data.result);
     }
 
@@ -336,8 +360,8 @@ export default Join = (props) => {
         <>
             <ScrollView >
                 <View style={[styles.logoSection, { height: 250 - keyboardH }]}>
-                    <Image style={[styles.logo, { width: 250 - keyboardH }]}
-                        source={require('../../assets/images/robot-dev.png')} />
+                    <Image style={styles.logo}
+                        source={require('../../assets/images/gif_intro.gif')} />
                 </View>
                 <View style={styles.stepsBar}>
                     <StepsBar stepNum={StepNum} step={JoinSteps} />
@@ -505,7 +529,7 @@ export default Join = (props) => {
                         </View>
                         {MailReqBtn
                             ? <Button title="메일 다시 요청" onPress={_emailAuthReq} />
-                            : <Text style={{ color:"red" }}>{ExClock}</Text>
+                            : <Text style={{ color: "red" }}>{ExClock}</Text>
                         }
                         <View style={styles.inputSection}>
                             <View style={styles.iconWrap}>

@@ -10,6 +10,7 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    ImageBackground,
 } from "react-native";
 import axios from 'axios';
 import { styles } from './Login_Style';
@@ -24,14 +25,14 @@ export default Join = (props) => {
     * ============================================================================================================================ 
     */
     const [isLoading, setisLoading] = useState(false);
-    const _Loading = () => {
-        setisLoading(true);
-        console.log("로딩중", isLoading);
-        setTimeout(() => { // 
-            setisLoading(false);
-            console.log("완료", isLoading);
-        }, 2000);
-    }
+    // const _Loading = () => {
+    //     setisLoading(true);
+    //     console.log("로딩중", isLoading);
+    //     setTimeout(() => { // 
+    //         setisLoading(false);
+    //         console.log("완료", isLoading);
+    //     }, 2000);
+    // }
     //////////
 
     /**
@@ -66,7 +67,7 @@ export default Join = (props) => {
     const _userInputs = (text, key) => { // 입력값 갱신용  
         setLoginInfo({ ...LoginInfo, [key]: text });
     };
-    console.log(LoginInfo);
+    // console.log(LoginInfo);
 
     const _validate = (key) => { // 입력값 검증 함수
         const { id, password } = LoginInfo;
@@ -103,7 +104,9 @@ export default Join = (props) => {
 
     // *** DB check ***
     const baseURL = "https://stamp-test-server.herokuapp.com";
+
     _login = async () => {
+        setisLoading(true); //로딩시작
         const { id, password } = LoginInfo;
 
         const { data } = await axios.post(
@@ -113,10 +116,13 @@ export default Join = (props) => {
 
         console.log(data);
         if (data.result === true) {
+            setisLoading(false) //로딩 끝
             await AsyncStorage.setItem('userToken', data.token);  // "abc자리에 token 입력"
             navigation.navigate("AuthChecker")
         } else {
             //오류처리
+            alert(data.msg);
+            navigation.navigate("AuthChecker")
         }
     }
 
@@ -124,23 +130,26 @@ export default Join = (props) => {
         <>
             <ScrollView style={styles.statusHeight}>
                 {isLoading
-                    ? <View style={styles.loading}>
-                        <Text>로딩중</Text>
-                        <ActivityIndicator />
-                    </View>
+                    ? <ImageBackground style={styles.loading}
+                        source={require('../../assets/images/gif_intro.gif')}>
+                        <View style={styles.loadContainer}>
+                            <Text style={styles.loadText}>로딩중</Text>
+                            <ActivityIndicator color="#FFF8DC" size="large" />
+                        </View>
+                    </ImageBackground>
                     : <>
-                        <View style={[styles.logoSection, { height: 250 - keyboardH }]}>
-                            <Image style={[styles.logo, { width: 250 - keyboardH }]}
-                                source={require('../../assets/images/robot-dev.png')} />
+                        <View style={[styles.logoSection, { height: 350 - keyboardH }]}>
+                            <Image style={styles.logo}
+                                source={require('../../assets/images/gif_intro.gif')} />
                         </View>
                         <View style={styles.container}>
-                            <View style={styles.welcomeSection}>
+                            {/* <View style={styles.welcomeSection}>
                                 <Text style={styles.welcomeText}>screens 안녕하세요</Text>
                                 <Text style={styles.welcomeText}>screens 안녕하세요</Text>
                                 <Text style={styles.welcomeText}>screens 안녕하세요</Text>
                                 <Text style={styles.welcomeText}>screens 안녕하세요</Text>
                                 <Text style={styles.welcomeText}>screens 안녕하세요</Text>
-                            </View>
+                            </View> */}
                             <View style={styles.inputSection}>
                                 <View style={styles.iconWrap}>
                                     <Ionicons name="md-person" size={30} color="black" />
@@ -176,20 +185,19 @@ export default Join = (props) => {
                                 />
                             </View>
                             <WarningText wordFor="password" />
+                            <View style={styles.submitContainer}>
+                                <TouchableOpacity style={styles.submitButton} onPress={() => { navigation.navigate("Join") }}>
+                                    <Text style={styles.submitText}>회원가입</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.submitButton} onPress={_login}>
+                                    <Text style={styles.submitText}>로그인</Text>
+                                </TouchableOpacity>
+                            </View>
 
-
-                            <Button
-                                title="Login"
-                                onPress={_login}
-                            />
-                            <Button
-                                title="회원가입"
-                                onPress={() => { navigation.navigate("Join") }}
-                            />
-                            <Button
+                            {/* <Button
                                 title="loading test"
                                 onPress={_Loading}
-                            />
+                            /> */}
                         </View>
                     </>
                 }
