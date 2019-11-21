@@ -12,6 +12,7 @@ const AuthStack = createStackNavigator({ Login, Join });
 
 // 토큰 ok -> 인증 체크 (success) -> Main Nav
 import MainTabNavigator from './MainTabNavigator';
+import MainDrawerNavigator from './MainDrawerNavigator';
 
 
 export default createAppContainer(
@@ -20,9 +21,10 @@ export default createAppContainer(
       AuthChecker,
       Auth: AuthStack,
       Main: MainTabNavigator,
+      Main_Drawer: MainDrawerNavigator
     },
     {
-      initialRouteName: "AuthChecker"
+      initialRouteName: "Main_Drawer"
     }
   )
 );

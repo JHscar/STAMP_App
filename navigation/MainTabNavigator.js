@@ -1,39 +1,40 @@
-import React from 'react';
-import { Platform } from 'react-native';
-import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
+import React, { Component } from 'react';
+import { Platform, View, TouchableOpacity, Image } from 'react-native';
+import { createBottomTabNavigator } from 'react-navigation';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+
+import MainMap from '../screens/MainMap';
+import MissionList from '../screens/MissionPage/MissionList';
+import MissionView from '../screens/MissionPage/MissionView';
+
+
+
+// 밑은 BottomNavigation
 
 const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
 });
 
-const HomeStack = createStackNavigator(
+const MainMapStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Home: {
+      screen: MainMap,
+    }
   },
-  config
 );
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon
-      focused={focused}
-      name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
-      }
-    />
-  ),
+MainMapStack.navigationOptions = {
+  tabBarLabel: '찜',
+  tabBarIcon: ({ tintColor }) =>
+    <Image source={require("../assets/images/heart.png")} style={{ width: 35, height: 35 }} color={tintColor} />
 };
 
-HomeStack.path = '';
+MainMapStack.path = '';
 
 const LinksStack = createStackNavigator(
   {
@@ -43,36 +44,38 @@ const LinksStack = createStackNavigator(
 );
 
 LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'} />
-  ),
+  tabBarLabel: '예정',
+  tabBarIcon: ({ tintColor }) =>
+    <Image source={require("../assets/images/expect.png")} style={{ width: 35, height: 35 }} color={tintColor} />
 };
 
 LinksStack.path = '';
 
-const SettingsStack = createStackNavigator(
+const MissionListStack = createStackNavigator(
   {
-    Settings: SettingsScreen,
+    Mission_list: { screen: MissionList },
+    Mission_View: { screen: MissionView },
   },
-  config
+  { initialRouteName: "Mission_list" },
 );
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
-  tabBarIcon: ({ focused }) => (
-    <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'} />
-  ),
+MissionListStack.navigationOptions = {
+  tabBarLabel: '진행중',
+  tabBarIcon: ({ tintColor }) =>
+    <Image source={require("../assets/images/ing.png")} style={{ width: 35, height: 35 }} color={tintColor} />
 };
 
-SettingsStack.path = '';
+MissionListStack.path = '';
+
+
 
 const tabNavigator = createBottomTabNavigator({
-  HomeStack,
+  MainMapStack,
   LinksStack,
-  SettingsStack,
+  MissionListStack,
 });
 
 tabNavigator.path = '';
 
-export default tabNavigator;
+export default createAppContainer(tabNavigator);
+

@@ -74,9 +74,9 @@ export default function HomeScreen(props) {
   );
 }
 
-HomeScreen.navigationOptions = {
-  header: null,
-};
+// HomeScreen.navigationOptions = {
+//   header: null,
+// };
 
 function DevelopmentModeNotice() {
   if (__DEV__) {
