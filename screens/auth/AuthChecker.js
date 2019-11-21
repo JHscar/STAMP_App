@@ -11,7 +11,7 @@ export default authChecker = (props) => {
 
     _authChecker = async () => {
         const userToken = await AsyncStorage.getItem('userToken');
-        props.navigation.navigate(userToken ? 'Main' : 'Auth');
+        props.navigation.navigate(userToken ? 'Main_Drawer' : 'Auth');
     }
     useEffect(() => { _authChecker(); }, [])
     return (

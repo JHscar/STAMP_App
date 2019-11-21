@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "stamp",
+    "name": "stamp-ver0.1",
     "slug": "stamp_app",
     "privacy": "public",
     "sdkVersion": "35.0.0",
@@ -25,6 +25,7 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": ""
   }
 }

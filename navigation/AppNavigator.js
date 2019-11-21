@@ -20,11 +20,10 @@ export default createAppContainer(
     {
       AuthChecker,
       Auth: AuthStack,
-      Main: MainTabNavigator,
       Main_Drawer: MainDrawerNavigator
     },
     {
-      initialRouteName: "Main_Drawer"
+      initialRouteName: "AuthChecker"
     }
   )
 );
