@@ -48,7 +48,7 @@ export default class MainMap extends Component {
                 </TouchableOpacity>
 
                 <MapView
-                    style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    style={styles.mapStyle}
                     region={this.state.mapRegion}
                     showsUserLocation={true}
                     followsUserLocation={true}
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FFF",
-        marginTop: StatusBarH
+        marginTop: StatusBarH,
+        alignItems: "flex-start"
     },
 });

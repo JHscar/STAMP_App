@@ -1,6 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+
+const StatusBarH = StatusBar.currentHeight;
 
 export default class missionRecord extends React.Component {
     render() {
@@ -26,7 +28,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FFF",
-        marginTop: 25
+        marginTop: StatusBarH,
+        alignItems: "flex-start"
     },
     text: {
         color: "#161924",

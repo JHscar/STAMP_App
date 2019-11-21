@@ -138,17 +138,17 @@ export default class MissionView extends Component {
                 >
                     {this.state.data.map((data, index) => (
                         <View style={{
-                            backgroundColor: '#5f9ea0',
+                            backgroundColor: '#fff',
                             flex: 1,
+                            flexDirection: 'row',
                             width: screenWidth,
-                            justifyContent: 'center',
-                            alignItems: 'center'
                         }} key={index}>
-                            <Image
+                            <Image source={{ uri: data.photo }} style={[styles.company_profile,{alignItems: "flex-start"}]} />
+                            {/* <Image
                                 source={{ uri: data.photo }}
                                 style={styles.cardImage}
                                 resizeMode="cover"
-                            />
+                            /> */}
                             <View style={styles.textContent}>
                                 <Text numberOfLines={1} style={styles.cardtitle}>{data.name}</Text>
                                 <Text numberOfLines={1} style={styles.cardDescription}>
@@ -204,14 +204,15 @@ const styles = StyleSheet.create({
     },
     textContent: {
         flex: 1,
+        margin: 15
     },
     cardtitle: {
-        fontSize: 12,
+        fontSize: 25,
         marginTop: 5,
         fontWeight: "bold",
     },
     cardDescription: {
-        fontSize: 12,
+        fontSize: 15,
         color: "#444",
     },
     markerWrap: {
@@ -232,6 +233,14 @@ const styles = StyleSheet.create({
         position: "absolute",
         borderWidth: 1,
         borderColor: "rgba(130,4,150, 0.5)",
+    },
+    company_profile: {
+        width: 100,
+        height: 100,
+        borderRadius: 40,
+        borderWidth: 3,
+        borderColor: "#FFF",
+        margin: 15
     },
 });
 
