@@ -10,10 +10,11 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         width,
-        height: 250,
-        backgroundColor: "red",
+        // height: 250,
+        // backgroundColor: "red",
     },
     logo: {
+        width,
         height: "100%",
         resizeMode: "cover"
     },
@@ -22,7 +23,7 @@ export const styles = StyleSheet.create({
      */
     stepsBar: {
         alignSelf: "center",
-        marginTop: 10,
+        marginTop: 15,
         flexDirection: "row",
         width: "70%",
         justifyContent: "space-between",
@@ -166,7 +167,7 @@ export const styles = StyleSheet.create({
     },
     setpConText: {
         marginHorizontal: 5,
-        color:"white"
+        color: "white"
     },
     /**
     * ==============================================================

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "stamp-ver0.1",
+    "name": "stamp-ver0.2",
     "slug": "stamp_app",
     "privacy": "public",
     "sdkVersion": "35.0.0",
@@ -11,10 +11,10 @@
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/app_icon.png",
     "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
+      "image": "./assets/images/gif_intro.gif",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "updates": {
