@@ -14,7 +14,7 @@ export default class Screen extends React.Component {
                         <FontAwesome5 name="bars" size={24} color="#161924" />
                     </TouchableOpacity>
                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={styles.text}>{this.props.name} 알림함</Text>
+                        <Text style={styles.text}>{this.props.name} 미션기록</Text>
                     </View>
                 
             </View>

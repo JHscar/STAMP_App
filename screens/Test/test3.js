@@ -1,14 +1,36 @@
-import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
 
-
-
-export default class test3 extends Component {
+export default class Screen extends React.Component {
     render() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <Text>Test3중</Text>
+            <View style={styles.container}>
+                
+                    <TouchableOpacity
+                        style={{ alignItems: "flex-start", margin: 16 }}
+                        onPress={this.props.navigation.openDrawer}
+                    >
+                        <FontAwesome5 name="bars" size={24} color="#161924" />
+                    </TouchableOpacity>
+                    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                        <Text style={styles.text}>{this.props.name} 인벤토리</Text>
+                    </View>
+                
             </View>
-        )
+        );
     }
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#FFF",
+        marginTop: 25
+    },
+    text: {
+        color: "#161924",
+        fontSize: 20,
+        fontWeight: "500"
+    }
+});
