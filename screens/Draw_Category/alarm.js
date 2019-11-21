@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 
-export default class Screen extends React.Component {
+export default class alarm extends React.Component {
     render() {
         return (
             <View style={styles.container}>
@@ -14,7 +14,7 @@ export default class Screen extends React.Component {
                         <FontAwesome5 name="bars" size={24} color="#161924" />
                     </TouchableOpacity>
                     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={styles.text}>{this.props.name} 미션기록</Text>
+                        <Text style={styles.text}>{this.props.name} 알림함</Text>
                     </View>
                 
             </View>

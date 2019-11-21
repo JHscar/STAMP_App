@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Dimensions, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, TouchableOpacity, StatusBar } from 'react-native';
 import MapView from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { FontAwesome5 } from "@expo/vector-icons";
+
+const StatusBarH = StatusBar.currentHeight;
+
 export default class MainMap extends Component {
 
     state = {
@@ -78,6 +81,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#FFF",
-        marginTop: 25
+        marginTop: StatusBarH
     },
 });

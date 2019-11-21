@@ -8,11 +8,11 @@ import { Feather } from "@expo/vector-icons";
 import SideBar from "./Side/SideBar";
 import MainTabNavigator from "./MainTabNavigator";
 
-import Test1_Draw from '../screens/Test/test';
-import Test2_Draw from '../screens/Test/test2';
-import Test3_Draw from '../screens/Test/test3';
-import Test4_Draw from '../screens/Test/test4';
-import Test5_Draw from '../screens/Test/test5';
+import honor_Draw from '../screens/Draw_Category/honor';
+import alarm_Draw from '../screens/Draw_Category/alarm';
+import inventory_Draw from '../screens/Draw_Category/inventory';
+import missionRecord_Draw from '../screens/Draw_Category/missionRecord';
+import wallet_Draw from '../screens/Draw_Category/wallet';
 
 const DrawerNavigator = createDrawerNavigator(
     {
@@ -23,35 +23,35 @@ const DrawerNavigator = createDrawerNavigator(
             }
         },
         국밥종결자: {
-            screen: Test1_Draw,
+            screen: honor_Draw,
             navigationOptions: {
                 title: "국밥종결자",
                 drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/medal.png")} style={{ width: 45, height: 45 }} color={tintColor} />
             }
         },
         알림함: {
-            screen: Test2_Draw,
+            screen: alarm_Draw,
             navigationOptions: {
                 title: "알림함",
                 drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/alarm.png")} style={{ width: 45, height: 45 }} color={tintColor} />
             }
         },
         인벤토리: {
-            screen: Test3_Draw,
+            screen: inventory_Draw,
             navigationOptions: {
                 title: "인벤토리",
                 drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/inventory.png")} style={{ width: 45, height: 45 }} color={tintColor} />
             }
         },
         미션기록: {
-            screen: Test4_Draw,
+            screen: missionRecord_Draw,
             navigationOptions: {
                 title: "미션기록",
                 drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/missionRecord.png")} style={{ width: 45, height: 45 }} color={tintColor} />
             }
         },
         지갑: {
-            screen: Test5_Draw,
+            screen: wallet_Draw,
             navigationOptions: {
                 title: "지갑",
                 drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/wallet.png")} style={{ width: 45, height: 45 }} color={tintColor} />
