@@ -87,7 +87,9 @@ const TestStack = createStackNavigator(
   {
     test_1: TestScreen,
   },
-  config
+  {
+    headerMode: null,
+  }
 );
 
 TestStack.navigationOptions = {
@@ -104,7 +106,7 @@ const tabNavigator = createBottomTabNavigator({
   MainMapStack,
   LinksStack,
   MissionListStack,
-  // TestStack,
+  TestStack,
 });
 
 tabNavigator.path = '';
