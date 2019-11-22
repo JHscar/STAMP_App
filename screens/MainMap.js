@@ -40,12 +40,14 @@ export default class MainMap extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity
-                    style={{ alignItems: "flex-start", margin: 16 }}
-                    onPress={this.props.navigation.openDrawer}
-                >
-                    <FontAwesome5 name="bars" size={24} color="#161924" />
-                </TouchableOpacity>
+                <View style={{ alignItems: "flex-start" }}>
+                    <TouchableOpacity
+                        style={{ alignItems: "flex-start", margin: 16 }}
+                        onPress={this.props.navigation.openDrawer}
+                    >
+                        <FontAwesome5 name="bars" size={24} color="#161924" />
+                    </TouchableOpacity>
+                </View>
 
                 <MapView
                     style={styles.mapStyle}
@@ -82,6 +84,5 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#FFF",
         marginTop: StatusBarH,
-        alignItems: "flex-start"
     },
 });
