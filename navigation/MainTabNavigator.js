@@ -19,7 +19,10 @@ const config = Platform.select({
   web: { headerMode: 'screen' },
   default: {},
 });
-
+/**
+ * ========================================================================================================================
+ * 메인페이지   ( 찜한 것 들만 보임)
+ */
 const MainMapStack = createStackNavigator(
   {
     Home: {
@@ -36,6 +39,10 @@ MainMapStack.navigationOptions = {
 
 MainMapStack.path = '';
 
+/**
+ * ========================================================================================================================
+ * 예정 페이지
+ */
 const LinksStack = createStackNavigator(
   {
     Links: LinksScreen,
@@ -51,6 +58,10 @@ LinksStack.navigationOptions = {
 
 LinksStack.path = '';
 
+/**
+ * ========================================================================================================================
+ * 진행중 미션 보기 
+ */
 const MissionListStack = createStackNavigator(
   {
     Mission_list: { screen: MissionList },
@@ -67,12 +78,33 @@ MissionListStack.navigationOptions = {
 
 MissionListStack.path = '';
 
+/**
+ * ========================================================================================================================
+ * 기능 테스트 페이지
+ */
+import TestScreen from '../screens/Test'
+const TestStack = createStackNavigator(
+  {
+    test_1: TestScreen,
+  },
+  config
+);
+
+TestStack.navigationOptions = {
+  tabBarLabel: '기능테스트',
+  tabBarIcon: ({ tintColor }) =>
+    <Image source={require("../assets/images/expect.png")} style={{ width: 35, height: 35 }} color={tintColor} />
+};
+
+TestStack.path = '';
+
 
 
 const tabNavigator = createBottomTabNavigator({
   MainMapStack,
   LinksStack,
   MissionListStack,
+  // TestStack,
 });
 
 tabNavigator.path = '';
