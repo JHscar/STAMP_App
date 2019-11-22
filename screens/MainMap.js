@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Dimensions, TouchableOpacity, StatusBar } from 'react-native';
-import MapView from 'react-native-maps';
+import Platform, { StyleSheet, View, Dimensions, TouchableOpacity, StatusBar } from 'react-native';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -15,9 +15,24 @@ export default class MainMap extends Component {
         locationResult: null
     };
 
+    // componentWillMount() {
+    //     if (Platform.OS === 'ios' && !Constants.isDevice) {
+    //         this.setState({
+    //             errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+    //         });
+    //     } else {
+    //         this.getLocationAsync();
+    //     }
+    // }
 
     componentDidMount() {
-        this.getLocationAsync();
+        if (Platform.OS === 'ios' || Platform.OS === 'android') {
+            this.setState({
+                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+            });
+        } else {
+            this.getLocationAsync();
+        }
     }
 
     async getLocationAsync() {
@@ -50,6 +65,7 @@ export default class MainMap extends Component {
                 </View>
 
                 <MapView
+                    provider={PROVIDER_GOOGLE}
                     style={styles.mapStyle}
                     region={this.state.mapRegion}
                     showsUserLocation={true}
