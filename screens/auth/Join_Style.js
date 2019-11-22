@@ -2,10 +2,36 @@ import { StyleSheet, Dimensions } from 'react-native';
 import { Header } from 'react-navigation';
 const { width, height } = Dimensions.get("window");
 
-// const baseMargin = width * 0.01;
-// console.log(baseMargin);
+const colorSet = {
+    Cornsilk: "#FFF8DC", //연한 노란색
+    Mauve: "#E0B0FF", //연한 보라색
+    GrayCloud: "#B6B6B4" // 조금 진한 회색
+}
 
 export const styles = StyleSheet.create({
+    // 로딩
+    loading: {
+        width,
+        height: height,
+        resizeMode: "cover",
+        // justifyContent: "center",
+        alignItems: "center",
+    },
+    loadContainer: {
+        marginTop: height * 0.6,
+        width: "50%",
+        height: width * 0.25,
+        backgroundColor: colorSet.Mauve,
+        borderRadius: width * 0.25,
+        alignItems: "center",
+        justifyContent: "center"
+    },
+    loadText: {
+        fontFamily: "jua",
+        fontSize: width * 0.25 * 0.25, // 높이의 1/4
+        // color: colorSet.Cornsilk
+    },
+    //
     logoSection: {
         justifyContent: "center",
         alignItems: "center",

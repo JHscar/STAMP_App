@@ -116,8 +116,10 @@ export default Join = (props) => {
 
         console.log(data);
         if (data.result === true) {
+            await AsyncStorage.setItem('userToken', data.token, () => {
+                AsyncStorage.setItem('userId', LoginInfo.id)
+            });
             setisLoading(false) //로딩 끝
-            await AsyncStorage.setItem('userToken', data.token);  // "abc자리에 token 입력"
             navigation.navigate("AuthChecker")
         } else {
             //오류처리
