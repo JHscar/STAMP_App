@@ -65,7 +65,7 @@ const DrawerNavigator = createDrawerNavigator(
         hideStatusBar: true,
 
         contentOptions: {
-            activeBackgroundColor: "rgba(212,118,207, 0.2)",
+            activeBackgroundColor: "#f5f9e8",
             activeTintColor: "#3b465b",
             itemsContainerStyle: {
                 marginTop: 16,
