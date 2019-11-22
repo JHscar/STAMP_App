@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, ScrollView, Image, Animated, Dimensions } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import Platform ,{ StyleSheet, View, Text, Image, Animated, Dimensions } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 
@@ -32,7 +32,13 @@ export default class MissionView extends Component {
 
     componentDidMount() {
 
-        this._getLocationAsync();
+        if (Platform.OS === 'ios' || Platform.OS === 'android') {
+            this.setState({
+                errorMessage: 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!',
+            });
+        } else {
+            this._getLocationAsync();
+        }
 
 
         // We should detect when scrolling has stopped then animate
@@ -99,6 +105,7 @@ export default class MissionView extends Component {
             <>
 
                 <MapView
+                    provider={PROVIDER_GOOGLE}
                     ref={map => this.map = map}
                     region={this.state.mapRegion}
                     style={{ flex: 1 }}
@@ -143,7 +150,7 @@ export default class MissionView extends Component {
                             flexDirection: 'row',
                             width: screenWidth,
                         }} key={index}>
-                            <Image source={{ uri: data.photo }} style={[styles.company_profile,{alignItems: "flex-start"}]} />
+                            <Image source={{ uri: data.photo }} style={[styles.company_profile, { alignItems: "flex-start" }]} />
                             {/* <Image
                                 source={{ uri: data.photo }}
                                 style={styles.cardImage}
