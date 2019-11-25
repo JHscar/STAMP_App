@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 import { styles } from './Login_Style';
 import { Ionicons } from '@expo/vector-icons';
+import baseURL from '../../config';
 
 export default Join = (props) => {
     const { navigation } = props;
@@ -103,7 +104,7 @@ export default Join = (props) => {
     //////////
 
     // *** DB check ***
-    const baseURL = "https://stamp-test-server.herokuapp.com";
+    // const baseURL = "https://stamp-test-server.herokuapp.com";
 
     _login = async () => {
         setisLoading(true); //로딩시작
