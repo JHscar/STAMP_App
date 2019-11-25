@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 import { styles } from './Join_Style';
 import { Ionicons } from '@expo/vector-icons';
+import baseURL from '../../config';
 
 export default Join = (props) => {
     const { navigation } = props;
@@ -147,7 +148,7 @@ export default Join = (props) => {
         )
     }
     // *** DB check ***
-    const baseURL = "https://stamp-test-server.herokuapp.com";
+    // const baseURL = "https://stamp-test-server.herokuapp.com";
 
     // 중복확인 API 함수
     const _checkDuplicateInDB = async (type, key) => {  //  user:id / personal:email,phone_num
@@ -332,7 +333,7 @@ export default Join = (props) => {
                 setMailExpire(exTime);
                 console.log("인증 만료!")
             }, exTime);
-            
+
         } else {
             alert("잘못된 접근 입니다.");
             navigation.navigate(Join);

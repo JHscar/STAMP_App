@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "stamp-ver0.5",
+    "name": "stamp-ver0.61",
     "slug": "stamp_app",
     "privacy": "public",
     "sdkVersion": "35.0.0",
@@ -26,7 +26,7 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyAITJoiCOMRL6aJJqvau0qBgw_OaeAwCg4" 
+        "googleMapsApiKey": "AIzaSyAITJoiCOMRL6aJJqvau0qBgw_OaeAwCg4"
       }
     },
     "android": {
