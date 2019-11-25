@@ -4,18 +4,10 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 const StatusBarH = StatusBar.currentHeight;
 
-export default class alarm extends React.Component {
+export default class MailBox extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={{ alignItems: "flex-start" }}>
-                    <TouchableOpacity
-                        style={{ alignItems: "flex-start", margin: 16 }}
-                        onPress={this.props.navigation.openDrawer}
-                    >
-                        <FontAwesome5 name="bars" size={24} color="#161924" />
-                    </TouchableOpacity>
-                </View>
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <Text style={styles.text}>{this.props.name} 알림함</Text>
                 </View>

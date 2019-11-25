@@ -11,8 +11,7 @@ import Join from '../screens/auth/Join';
 const AuthStack = createStackNavigator({ Login, Join });
 
 // 토큰 ok -> 인증 체크 (success) -> Main Nav
-import MainTabNavigator from './MainTabNavigator';
-import MainDrawerNavigator from './MainDrawerNavigator';
+import MainNavigator from './MainNavigator';
 
 
 export default createAppContainer(
@@ -20,7 +19,7 @@ export default createAppContainer(
     {
       AuthChecker,
       Auth: AuthStack,
-      Main_Drawer: MainDrawerNavigator
+      Main: MainNavigator
     },
     {
       initialRouteName: "AuthChecker"

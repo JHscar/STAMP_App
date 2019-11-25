@@ -4,20 +4,12 @@ import { FontAwesome5 } from "@expo/vector-icons";
 
 const StatusBarH = StatusBar.currentHeight;
 
-export default class honor extends React.Component {
+export default class inventory extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={{ alignItems: "flex-start" }}>
-                    <TouchableOpacity
-                        style={{ alignItems: "flex-start", margin: 16 }}
-                        onPress={this.props.navigation.openDrawer}
-                    >
-                        <FontAwesome5 name="bars" size={24} color="#161924" />
-                    </TouchableOpacity>
-                </View>
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                    <Text style={styles.text}>{this.props.name} 국밥종결자</Text>
+                    <Text style={styles.text}>{this.props.name} 인벤토리</Text>
                 </View>
 
             </View>
