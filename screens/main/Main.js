@@ -18,12 +18,17 @@ import {
   TouchableOpacity,
   UIManager,
   View,
+  Button,
+  Alert,
 } from 'react-native';
 
 import img_ing from '../../assets/images/ing.png';
 import img_heart from '../../assets/images/heart.png';
 import img_expect from '../../assets/images/expect.png';
 import img_drawer from '../../assets/images/drawer.png'
+import img_myloc from '../../assets/images/mylocation.png';
+import img_non_heart from '../../assets/images/non_heart.png';
+import img_marker from '../../assets/images/missionMarker.png';
 
 const { width, height } = Dimensions.get("window");
 const statusBarH = StatusBar.currentHeight;
@@ -79,7 +84,9 @@ export default function Main(props) {
       name: "미션명1",
       email: "miyah.myles@gmail.com",
       position: "Data Entry Clerk",
-      photo: "https://i.imgur.com/sNam9iJ.jpg"
+      photo: "https://i.imgur.com/sNam9iJ.jpg",
+      date: "11.28~12.25",
+      reward: 1000,
     },
     {
       coordinate: {
@@ -89,7 +96,9 @@ export default function Main(props) {
       name: "미션명2",
       email: "june.cha@gmail.com",
       position: "Sales Manager",
-      photo: "https://randomuser.me/api/portraits/women/44.jpg"
+      photo: "https://randomuser.me/api/portraits/women/44.jpg",
+      date: "11.28~12.15",
+      reward: 3000,
     },
     {
       coordinate: {
@@ -99,7 +108,9 @@ export default function Main(props) {
       name: "미션명3",
       email: "iida.niskanen@gmail.com",
       position: "Sales Manager",
-      photo: "https://randomuser.me/api/portraits/women/68.jpg"
+      photo: "https://randomuser.me/api/portraits/women/68.jpg",
+      date: "11.28~12.21",
+      reward: 2000,
     },
     {
       coordinate: {
@@ -109,7 +120,9 @@ export default function Main(props) {
       name: "미션명4",
       email: "renee.sims@gmail.com",
       position: "Medical Assistant",
-      photo: "https://randomuser.me/api/portraits/women\/65.jpg"
+      photo: "https://randomuser.me/api/portraits/women\/65.jpg",
+      date: "11.18~12.21",
+      reward: 250,
     },
     {
       coordinate: {
@@ -119,7 +132,9 @@ export default function Main(props) {
       name: "미션명5",
       email: "jonathan.nu\u00f1ez@gmail.com",
       position: "Clerical",
-      photo: "https://randomuser.me/api/portraits/men/43.jpg"
+      photo: "https://randomuser.me/api/portraits/men/43.jpg",
+      date: "11.28~12.01",
+      reward: 500,
     },
     {
       coordinate: {
@@ -129,7 +144,9 @@ export default function Main(props) {
       name: "미션명6",
       email: "sasha.ho@gmail.com",
       position: "Administrative Assistant",
-      photo: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb"
+      photo: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?h=350&auto=compress&cs=tinysrgb",
+      date: "11.28~02.21",
+      reward: 4000,
     },
     {
       coordinate: {
@@ -139,7 +156,9 @@ export default function Main(props) {
       name: "미션명7",
       email: "abdullah.hadley@gmail.com",
       position: "Marketing",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f"
+      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=200&fit=max&s=a72ca28288878f8404a795f39642a46f",
+      date: "10.28~12.21",
+      reward: 2100,
     },
     {
       coordinate: {
@@ -149,7 +168,9 @@ export default function Main(props) {
       name: "미션명8",
       email: "thomas.stock@gmail.com",
       position: "Product Designer",
-      photo: "https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg"
+      photo: "https://tinyfac.es/data/avatars/B0298C36-9751-48EF-BE15-80FB9CD11143-500w.jpeg",
+      date: "11.28~05.21",
+      reward: 1100,
     },
     {
       coordinate: {
@@ -159,7 +180,9 @@ export default function Main(props) {
       name: "미션명9",
       email: "veeti.seppanen@gmail.com",
       position: "Product Designer",
-      photo: "https://randomuser.me/api/portraits/men/97.jpg"
+      photo: "https://randomuser.me/api/portraits/men/97.jpg",
+      date: "09.28~12.21",
+      reward: 1300,
     },
     {
       coordinate: {
@@ -169,7 +192,9 @@ export default function Main(props) {
       name: "미션명10",
       email: "bonnie.riley@gmail.com",
       position: "Marketing",
-      photo: "https://randomuser.me/api/portraits/women/26.jpg"
+      photo: "https://randomuser.me/api/portraits/women/26.jpg",
+      date: "11.28~07.21",
+      reward: 600,
     }
   ];
   const [makers, setMakers] = useState(null);
@@ -188,6 +213,7 @@ export default function Main(props) {
   //     longitudeDelta: 0.005
   //   });
   // }
+
 
   const _focusCamera = (ix) => {
     const { latitude, longitude } = DBdata[ix].coordinate;
@@ -231,24 +257,108 @@ export default function Main(props) {
   // renderItems component
   const RenderList = ({ item, index }) => (
     <View style={modal.Contents}>
-      <TouchableOpacity onPress={() => { _pagination(0, index) }}>
-        <Image source={{ uri: item.photo }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-        <View>
+      <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => { _pagination(0, index) }}>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Image source={{ uri: item.photo }} style={{ width: '95%', height: 200, marginTop: 5 }} />
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+            {item.position}
+          </Text>
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+            <Image source={require("../../assets/images/medal.png")} style={{ width: 20, height: 20 }} />
+            <Text>
+              미션기간
+            </Text>
+          </View>
+
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+            <Image source={require("../../assets/images/rewardcoin.png")} style={{ width: 20, height: 20 }} />
+            <Text>
+              미션보상
+            </Text>
+          </View>
+
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' }}>
+            <Image source={require("../../assets/images/non_heart.png")} style={{ width: 20, height: 20 }} />
+            <Text>
+              찜
+            </Text>
+          </View>
+
+        </View>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>
+              {item.date}
+            </Text>
+          </View>
+
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>
+              {item.reward}
+            </Text>
+          </View>
+
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>
+              100명
+          </Text>
+          </View>
+        </View>
+
+        {/* <View>
           <Text >{item.name}</Text>
           <Text>{item.position}</Text>
           <Text>평점</Text>
-        </View>
+        </View> */}
       </TouchableOpacity>
     </View>
   );
   const RenderItems = ({ item }) => (
     <View style={modal.Contents}>
-      <Image source={{ uri: item.photo }} style={{ width: 60, height: 60, borderRadius: 30 }} />
-      <View>
-        <Text >{item.name}</Text>
-        <Text>{item.position}</Text>
-        <Text>평점</Text>
-      </View>
+      {/* <Image source={{ uri: item.photo }} style={{ width: 60, height: 60, borderRadius: 30 }} /> */}
+      <TouchableOpacity style={{ flex: 1 }} onPress={() => { }}>
+
+        <View style={{ flex: 1, flexDirection: 'column' }}>
+          <View style={{ margin: 5 }}>
+            <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{item.position}</Text>
+            <Text style={{ fontWeight: 'normal', color: 'grey' }}>PH : 010-1234-5678</Text>
+            <Text style={{ fontWeight: 'normal' }}>주소 : 서울 강남구 역삼동 111-111</Text>
+          </View>
+        </View>
+
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start' }}>
+
+          <View style={{ margin: 5 }}>
+            <Button
+              title="거리 조회"
+              onPress={() => Alert.alert('거리조회')} />
+          </View>
+
+          <View style={{ margin: 5 }}>
+            <Button
+              title="네비게이션"
+              onPress={() => Alert.alert('네비게이션')} />
+          </View>
+
+          <View style={{ margin: 5 }}>
+            <Button
+              title="대중교통"
+              onPress={() => Alert.alert('대중교통')} />
+          </View>
+
+        </View>
+
+      </TouchableOpacity>
+      {/* <View style={{ flex: 1, flexDirection: 'row' }}>
+
+      </View> */}
     </View>
   );
 
@@ -265,7 +375,7 @@ export default function Main(props) {
         showsMyLocationButton={false}
       // followsUserLocation={true}
       >
-        {DBdata.map((data, ix) => <Marker key={ix} coordinate={data.coordinate} />)}
+        {DBdata.map((data, ix) => <Marker key={ix} coordinate={data.coordinate} image={img_marker} />)}
 
       </MapView>
 
@@ -283,7 +393,7 @@ export default function Main(props) {
         <TouchableOpacity
           style={overStyle.topRightButton}
           onPress={_myLocation}>
-          <Text>내위치</Text>
+          <Image style={overStyle.topRightImg} source={img_myloc} />
         </TouchableOpacity>
       </View>
 
@@ -316,7 +426,7 @@ export default function Main(props) {
       {/** 하단 네비게이션 버튼 */}
       <View style={overStyle.bottomSection}>
         <TouchableOpacity
-          style={overStyle.bottomButton}>
+          style={overStyle.bottomButton} onPress={() => { }}>
           <Image style={overStyle.bottomImg} source={img_heart}></Image>
         </TouchableOpacity>
 
@@ -369,7 +479,7 @@ const modal = StyleSheet.create({
     borderColor: "black",
     borderWidth: 1,
     width,
-    backgroundColor: "yellow"
+    backgroundColor: "white"
   },
 
 });
@@ -400,16 +510,20 @@ const overStyle = StyleSheet.create({
     position: "absolute",
     top: statusBarH + 10,
     right: 10,
-    width: 100,
-    height: 100,
-    backgroundColor: "rgba(220,220,220,0.5)",
+    // backgroundColor: "rgba(220,220,220,0.5)",
     // justifyContent:"flex-end",
     alignItems: "flex-end",
   },
   topRightButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: "red",
+    width: 40,
+    height: 40,
+    backgroundColor: "rgba(220,220,220,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  topRightImg: {
+    width: 30,
+    height: 30,
   },
 
   bottomSection: {
@@ -439,3 +553,22 @@ const overStyle = StyleSheet.create({
   },
 
 });
+
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    backgroundColor: '#ede3f2',
+    padding: 100
+  },
+  modal: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#f7021a',
+    padding: 100
+  },
+  text: {
+    color: '#3f2949',
+    marginTop: 10
+  }
+})
