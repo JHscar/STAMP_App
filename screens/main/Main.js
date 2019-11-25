@@ -212,7 +212,7 @@ export default function Main(props) {
   const _pagination = (velocity, index) => {
     if (index === 0 || index) {
       setFlatIndex(index);
-      _focusCamera(flatIndex);
+      _focusCamera(index);
       _clicked();
     } else {
       let nextIndex;
