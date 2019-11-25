@@ -13,7 +13,7 @@ export default authChecker = (props) => {
         const userToken = await AsyncStorage.getItem('userToken');
         const userId = await AsyncStorage.getItem("userId");
         console.log(userId,":",userToken); // 자동로그인 : 서버에 token 확인필요.
-        props.navigation.navigate(userToken ? 'Main_Drawer' : 'Auth');
+        props.navigation.navigate(userToken ? 'Main' : 'Auth');
     }
     useEffect(() => { _authChecker(); }, [])
     return (
