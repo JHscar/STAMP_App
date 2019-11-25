@@ -1,5 +1,5 @@
 import React from "react";
-import { Image, View, Text, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
+import { AsyncStorage, Image, View, Text, StyleSheet, TouchableOpacity, StatusBar } from "react-native";
 import img_drawer from '../../assets/images/drawer.png';
 
 const StatusBarH = StatusBar.currentHeight;
