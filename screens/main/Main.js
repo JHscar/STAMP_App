@@ -23,6 +23,7 @@ import {
 import img_ing from '../../assets/images/ing.png';
 import img_heart from '../../assets/images/heart.png';
 import img_expect from '../../assets/images/expect.png';
+import img_drawer from '../../assets/images/drawer.png'
 
 const { width, height } = Dimensions.get("window");
 const statusBarH = StatusBar.currentHeight;
@@ -287,7 +288,7 @@ export default function Main(props) {
         <TouchableOpacity
           style={overStyle.topLeftButton}
           onPress={navigation.openDrawer}>
-          <Text>사이드바</Text>
+          <Image style={overStyle.topLeftImg} source={img_drawer} />
         </TouchableOpacity>
       </View>
 
@@ -392,14 +393,20 @@ const overStyle = StyleSheet.create({
     position: "absolute",
     top: statusBarH + 10,
     left: 10,
-    width: 100,
-    height: 100,
-    backgroundColor: "rgba(220,220,220,0.5)",
+    // width: 100,
+    // height: 100,
+    // backgroundColor: "rgba(220,220,220,0.5)",
   },
   topLeftButton: {
-    width: 50,
-    height: 50,
-    backgroundColor: "red",
+    width: 40,
+    height: 40,
+    backgroundColor: "rgba(220,220,220,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  topLeftImg: {
+    width: 30,
+    height: 30,
   },
 
   topRightSection: {
@@ -423,7 +430,7 @@ const overStyle = StyleSheet.create({
     width,
     height: 100,
     bottom: 0,
-    backgroundColor: "rgba(220,220,220,0.5)",
+    backgroundColor: "white",
 
     flexDirection: "row",
     justifyContent: "space-around",
