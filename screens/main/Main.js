@@ -172,23 +172,22 @@ export default function Main(props) {
       photo: "https://randomuser.me/api/portraits/women/26.jpg"
     }
   ];
-  const [newRegion, setNewRegion] = useState({});
   const [makers, setMakers] = useState(null);
+
+  // 내위치 조회
   const _myLocation = async () => {
     const myLocation = await Location.getCurrentPositionAsync();
-    // console.log(myLocation);
     const { latitude, longitude } = myLocation.coords;
-    // console.log(latitude, longitude);
     _Map.animateToRegion({ latitude, longitude, latitudeDelta: 0.0422, longitudeDelta: 0.0121 });
   };
 
-  const _regionChange = (ix) => {
-    _Map.animateToRegion({
-      ...DBdata[ix].coordinate,
-      latitudeDelta: 0.0322,
-      longitudeDelta: 0.005
-    });
-  }
+  // const _regionChange = (ix) => {
+  //   _Map.animateToRegion({
+  //     ...DBdata[ix].coordinate,
+  //     latitudeDelta: 0.0322,
+  //     longitudeDelta: 0.005
+  //   });
+  // }
 
   const _focusCamera = (ix) => {
     const { latitude, longitude } = DBdata[ix].coordinate;
@@ -198,34 +197,21 @@ export default function Main(props) {
     })
   }
 
-
-
   // flatlist style controll
   const [click_num, setclick_num] = useState(0);
   const styleName = { 0: "Base", 1: "List", 2: "Item" };
+
   const _clicked = () => {
     LayoutAnimation.easeInEaseOut();
     setclick_num(click_num => ++click_num);
   };
-  // useEffect(() => {
-  //   click_num % 3 === 2 && _focusCamera(0);
-  // }, [click_num]);
-  // console.log(styleName[click_num % 3]);
-  // useEffect(() => { console.log(click_num % 3) }, [click_num]);
 
   // flatlist controll
   let [flatIndex, setFlatIndex] = useState(0)
-  // const _modal = () => {
-  //   !isModal && _regionChange(0);
-  //   LayoutAnimation.easeInEaseOut();
-  //   setisModal(!isModal);
-  //   flatIndex = 0; _pagination(); // 페이지 초기화
-  // };
   // touch drag change index
   const _pagination = (velocity, index) => {
-    if (index) {
-      flatIndex = index;
-      _Flatlist.scrollToIndex({ index: flatIndex, animated: true });
+    if (index === 0 || index) {
+      setFlatIndex(index);
       _focusCamera(flatIndex);
       _clicked();
     } else {
@@ -315,6 +301,7 @@ export default function Main(props) {
         {styleName[click_num % 3] === "Item"
           && <FlatList
             data={DBdata}
+            initialScrollIndex={flatIndex}
             renderItem={({ item }) => <RenderItems item={item} />}
             keyExtractor={item => item.name}
             horizontal={true} // 가로방향

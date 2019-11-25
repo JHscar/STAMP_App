@@ -1,1 +1,1 @@
-module.exports = baseURL = "https://stamp-server-combine.herokuapp.com/";
+module.exports = baseURL = "https://stamp-server-combine.herokuapp.com";
