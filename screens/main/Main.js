@@ -20,6 +20,10 @@ import {
   View,
 } from 'react-native';
 
+import img_ing from '../../assets/images/ing.png';
+import img_heart from '../../assets/images/heart.png';
+import img_expect from '../../assets/images/expect.png';
+
 const { width, height } = Dimensions.get("window");
 const statusBarH = StatusBar.currentHeight;
 
@@ -297,8 +301,7 @@ export default function Main(props) {
       </View>
 
       {/** 하단에 숨겨진 item 1 */}
-      <View
-        style={[modal[`Section_${styleName[click_num % 3]}`], modal[styleName[click_num % 3]]]}>
+      <View style={[modal[`Section_${styleName[click_num % 3]}`], modal[styleName[click_num % 3]]]}>
         {styleName[click_num % 3] === "List"
           && <FlatList
             data={DBdata}
@@ -325,8 +328,19 @@ export default function Main(props) {
       {/** 하단 네비게이션 버튼 */}
       <View style={overStyle.bottomSection}>
         <TouchableOpacity
+          style={overStyle.bottomButton}>
+          <Image style={overStyle.bottomImg} source={img_heart}></Image>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={overStyle.bottomButton}>
+          <Image style={overStyle.bottomImg} source={img_expect}></Image>
+        </TouchableOpacity>
+
+        <TouchableOpacity
           style={overStyle.bottomButton}
           onPress={_clicked}>
+          <Image style={overStyle.bottomImg} source={img_ing}></Image>
         </TouchableOpacity>
       </View>
     </>
@@ -336,7 +350,7 @@ export default function Main(props) {
 
 const modal = StyleSheet.create({
   Base: {
-    top: height + statusBarH
+    bottom: -height
   },
   List: {
     bottom: 100
@@ -346,21 +360,18 @@ const modal = StyleSheet.create({
   },
   Section_Base: {
     position: "absolute",
-    bottom: -height,
     width,
-    height: height - 100,
+    // height: height - 100,
     backgroundColor: "rgba(111,111,111,0.3)",
   },
   Section_List: {
     position: "absolute",
-    bottom: -height,
     width,
     height: height - 100,
     backgroundColor: "rgba(111,111,111,0.3)",
   },
   Section_Item: {
     position: "absolute",
-    bottom: -height,
     width,
     height: width * 0.5,
     backgroundColor: "rgba(111,111,111,0.3)",
@@ -415,7 +426,7 @@ const overStyle = StyleSheet.create({
     backgroundColor: "rgba(220,220,220,0.5)",
 
     flexDirection: "row",
-    justifyContent: "center",
+    justifyContent: "space-around",
     alignItems: "center",
 
   },
@@ -423,7 +434,14 @@ const overStyle = StyleSheet.create({
     marginHorizontal: 10,
     width: 50,
     height: 50,
+    borderRadius: 25,
     backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bottomImg: {
+    width: 50,
+    height: 50,
   },
 
 });
