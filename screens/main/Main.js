@@ -44,6 +44,24 @@ export default function Main(props) {
   const [errorMessage, setErrorMessage] = useState("");
   const [isModal, setisModal] = useState(false);
 
+  const [count, setCount] = useState(0);
+
+  const testclick = () => {
+    if (count === 0) {
+      return (
+        <Image source={img_non_heart} style={{ width: 80, height: 80 }}></Image>
+      )
+    } else if (count === 1) {
+      return (
+        <Image source={img_heart} style={{ width: 80, height: 80 }}></Image>
+      )
+    } else {
+      return (
+        setCount(0)
+      )
+    }
+  }
+
   useEffect(() => {
     if (Platform.OS !== 'ios' && Platform.OS !== 'android') {
       setErrorMessage({
@@ -325,11 +343,19 @@ export default function Main(props) {
       {/* <Image source={{ uri: item.photo }} style={{ width: 60, height: 60, borderRadius: 30 }} /> */}
       <TouchableOpacity style={{ flex: 1 }} onPress={() => { }}>
 
-        <View style={{ flex: 1, flexDirection: 'column' }}>
-          <View style={{ margin: 5 }}>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+
+          <View style={{ margin: 5, flexDirection: 'column' }}>
             <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{item.position}</Text>
             <Text style={{ fontWeight: 'normal', color: 'grey' }}>PH : 010-1234-5678</Text>
             <Text style={{ fontWeight: 'normal' }}>주소 : 서울 강남구 역삼동 111-111</Text>
+          </View>
+
+          <View style={{ flex: 3, alignItems: 'center', justifyContent: 'center', margin: 5 }}>
+            <TouchableOpacity onPress={async () => { await setCount(count + 1); testclick() }}>
+              {/* <Image source={img_non_heart} style={{ width: 80, height: 80 }}></Image> */}
+              {testclick()}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -426,7 +452,7 @@ export default function Main(props) {
       {/** 하단 네비게이션 버튼 */}
       <View style={overStyle.bottomSection}>
         <TouchableOpacity
-          style={overStyle.bottomButton} onPress={() => { }}>
+          style={overStyle.bottomButton}>
           <Image style={overStyle.bottomImg} source={img_heart}></Image>
         </TouchableOpacity>
 
