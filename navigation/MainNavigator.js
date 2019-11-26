@@ -15,6 +15,10 @@ const TestDraw = createDrawerNavigator(
     {
         홈: {
             screen: Main,
+            navigationOptions: {
+                title: "홈",
+                drawerIcon: ({ tintColor }) => <Image source={require("../assets/images/home.png")} style={{ width: 45, height: 45 }} color={tintColor} />
+            }
         },
         칭호: {
             screen: Honor,
@@ -53,7 +57,7 @@ const TestDraw = createDrawerNavigator(
         },
     },
     {
-        initialRouteName: "미션기록",
+        // initialRouteName: "미션기록",
         contentComponent: props => <SideBar {...props} />,
         drawerWidth: Dimensions.get("window").width * 0.75,
     }

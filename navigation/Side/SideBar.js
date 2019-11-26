@@ -19,7 +19,7 @@ export default SideBar = (props) => {
                 <View
                     style={{ width: undefined, padding: 16, paddingTop: 48, backgroundColor: "#3b465b" }}
                 >
-                    <Image source={require("../../assets/images/robot-dev.png")} style={styles.profile} />
+                    <Image source={require("../../assets/images/profile.png")} style={styles.profile} />
                     <Text style={styles.name}>{userId}</Text>
 
                     <View style={{ flexDirection: "row" }}>
