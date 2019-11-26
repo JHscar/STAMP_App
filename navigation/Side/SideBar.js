@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AsyncStorage, StyleSheet, ScrollView, View, Image, Text } from 'react-native';
+import { AsyncStorage, StyleSheet, ScrollView, View, Image, Text, TouchableOpacity } from 'react-native';
 import { DrawerItems, SafeAreaView } from 'react-navigation';
 
 export default SideBar = (props) => {
@@ -11,14 +11,17 @@ export default SideBar = (props) => {
     };
     useEffect(() => {
         _getUser();
-    }, [])
+    }, []);
+
+    _logout = () => {
+        AsyncStorage.clear();
+        props.navigation.navigate("AuthChecker");
+    }
 
     return (
         <ScrollView>
             <SafeAreaView style={styles.container} forceInset={{ top: 'always', horizontal: 'never' }}>
-                <View
-                    style={{ width: undefined, padding: 16, paddingTop: 48, backgroundColor: "#3b465b" }}
-                >
+                <View style={{ width: undefined, padding: 16, paddingTop: 48, backgroundColor: "#3b465b" }}>
                     <Image source={require("../../assets/images/profile.png")} style={styles.profile} />
                     <Text style={styles.name}>{userId}</Text>
 
@@ -26,6 +29,9 @@ export default SideBar = (props) => {
                         <Image source={require("../../assets/images/medal.png")} style={{ width: 20, height: 20 }} />
                         <Text style={styles.followers}>"나는 React-native 중독자"</Text>
                     </View>
+                    <TouchableOpacity style={{ position: "absolute", top: 10, right: 15, height: 30, borderWidth: 0.5, borderColor: "white" }} onPress={_logout}>
+                        <Text style={{ color: "white", paddingHorizontal: 7 }}>logout</Text>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.container} forceInset={{ top: "always", horizontal: "never" }}>
                     <DrawerItems {...props} />
