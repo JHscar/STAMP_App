@@ -53,6 +53,7 @@ const TestDraw = createDrawerNavigator(
         },
     },
     {
+        initialRouteName: "미션기록",
         contentComponent: props => <SideBar {...props} />,
         drawerWidth: Dimensions.get("window").width * 0.75,
     }

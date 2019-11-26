@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import baseURL from '../../config';
 
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -69,6 +71,7 @@ export default function Main(props) {
       });
     } else {
       _getLocationAsync();
+      _getAllMssions();
     }
     return () => { };
   }, []);
@@ -91,6 +94,24 @@ export default function Main(props) {
       longitudeDelta: 0.0121
     });
   }
+
+  // DB API
+  const _getAllMssions = async () => { // 모든 미션 가져오기
+    const { data } = await axios.get(`${baseURL}/sample/all`);
+    console.log(data.DBdata);
+    setDB2data(data.DBdata);
+  };
+
+  const _likeMission = async () => {
+    const { data } = await axios.post(`${baseURL}/sample/like`, {
+      접속한아이디: "프로먹방러",
+      광고주소: "5ddcd1fbb360b80024dd4966",
+    });
+    console.log(data);  // result:true , msg:"좋아요 등록"
+  };
+
+  // DB controol
+  const [DB2data, setDB2data] = useState([]);
 
   // map controll
   const DBdata = [
@@ -276,13 +297,13 @@ export default function Main(props) {
   const RenderList = ({ item, index }) => (
     <View style={modal.Contents}>
       <TouchableOpacity style={{ flexDirection: 'column' }} onPress={() => { _pagination(0, index) }}>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {/* <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
           <Image source={{ uri: item.photo }} style={{ width: '95%', height: 200, marginTop: 5 }} />
-        </View>
+        </View> */}
 
         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
           <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
-            {item.position}
+            {item.title}
           </Text>
         </View>
 
@@ -313,7 +334,7 @@ export default function Main(props) {
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>
-              {item.date}
+              {item.startDate} ~ {item.endDate}
             </Text>
           </View>
 
@@ -323,18 +344,8 @@ export default function Main(props) {
             </Text>
           </View>
 
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>
-              100명
-          </Text>
-          </View>
         </View>
 
-        {/* <View>
-          <Text >{item.name}</Text>
-          <Text>{item.position}</Text>
-          <Text>평점</Text>
-        </View> */}
       </TouchableOpacity>
     </View>
   );
@@ -427,9 +438,9 @@ export default function Main(props) {
       <View style={[modal[`Section_${styleName[click_num % 3]}`], modal[styleName[click_num % 3]]]}>
         {styleName[click_num % 3] === "List"
           && <FlatList
-            data={DBdata}
+            data={DB2data}
             renderItem={({ item, index }) => <RenderList item={item} index={index} />}
-            keyExtractor={item => item.email}
+            keyExtractor={item => item._id}
             ref={ref => (_Flatlist = ref)}
           // onScrollEndDrag={e => _pagination(e.nativeEvent.velocity.x)}
           />
@@ -452,7 +463,9 @@ export default function Main(props) {
       {/** 하단 네비게이션 버튼 */}
       <View style={overStyle.bottomSection}>
         <TouchableOpacity
-          style={overStyle.bottomButton}>
+          style={overStyle.bottomButton}
+          onPress={_likeMission}
+        >
           <Image style={overStyle.bottomImg} source={img_heart}></Image>
         </TouchableOpacity>
 
