@@ -1,8 +1,8 @@
 import React from "react";
-import { Image, View, StatusBar, StyleSheet, TouchableOpacity } from "react-native";
-import img_drawer from '../../assets/images/drawer.png';
+import { Image, View, StatusBar, StyleSheet, TouchableOpacity, Platform } from "react-native";
+import img_drawerMenu from '../../assets/images/drawMenu.png';
 
-const StatusBarH = StatusBar.currentHeight;
+const StatusBarH = Platform.OS == "ios" ? 15 : StatusBar.currentHeight;
 
 export default function Button_LeftTop({ navigation }) {
     return (
@@ -11,7 +11,7 @@ export default function Button_LeftTop({ navigation }) {
             <TouchableOpacity
                 style={overStyle.topLeftButton}
                 onPress={navigation.openDrawer}>
-                <Image style={overStyle.topLeftImg} source={img_drawer} />
+                <Image style={overStyle.topLeftImg} source={img_drawerMenu} />
             </TouchableOpacity>
         </View >
     );

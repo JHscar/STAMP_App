@@ -1,93 +1,102 @@
-import React from "react";
-import { Image, View, Text, StyleSheet, TouchableOpacity, StatusBar, Dimensions } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { Image, View, Text, StyleSheet, TouchableOpacity, StatusBar, ScrollView, Dimensions, Platform } from "react-native";
+
+import axios from 'axios';
+import baseURL from '../../config';
 
 import Button_LeftTop from './Button_LeftTop';
 
 const { width, height } = Dimensions.get("window");
-const StatusBarH = StatusBar.currentHeight;
+const StatusBarH = Platform.OS == "ios" ? 15 : StatusBar.currentHeight;
 
-export default class MissionRecord extends React.Component {
-    render() {
-        const { navigation } = this.props;
-        return (
-            <>
-                <Button_LeftTop navigation={navigation} />
-                <View style={styles.container}>
+export default MissionRecord = (props) => {
+    const { navigation } = props;
 
+    // DB API
+    const _getAllMssions = async () => { // 모든 미션 가져오기
+        const { data } = await axios.get(`${baseURL}/sample/all`);
+        // console.log(data.DBdata);
+        setDBdata(data.DBdata);
+    };
 
-                    <Text style={styles.text}>{this.props.name} 미션 기록</Text>
+    const _likeMission = async () => {
+        const { data } = await axios.post(`${baseURL}/sample/like`, {
+            접속한아이디: "프로먹방러",
+            광고주소: "5ddcd1fbb360b80024dd4966",
+        });
+        console.log(data);  // result:true , msg:"좋아요 등록"
+    };
+
+    // data handler
+    const _split = (typeDate, key) => {
+        const theDate = typeDate.slice(0, 16).split("T");
+        const ymd = theDate[0];
+        const hm = theDate[1];
+        return key === "ymd" ? ymd : hm;
+    };
+
+    // DB controol
+    const [DBdata, setDBdata] = useState([]);
+
+    useEffect(() => {
+        _getAllMssions();
+    }, [])
+
+    return (
+        <>
+            <ScrollView style={{ marginTop: StatusBarH }}>
+                <Text style={styles.text}>{props.name} 미션 기록</Text>
+                {DBdata.map(data => (<View key={data._id} style={{ alignItems: "center" }}>
                     <View style={Card.container}>
 
-                        <View style={Card.header}>
-                            <Text style={Card.headerText}>2019 어린이주간 기념 이벤트</Text>
+                        <View style={Card.author}>
+                            <Text style={Card.authorText}>{data.authorName}</Text>
                         </View>
 
                         <View style={Card.title}>
-                            <Text style={Card.titleText}>연합뉴스 카드뉴스</Text>
-                            <Text style={Card.title2Text}>퍼가기 이벤트</Text>
+                            <Text style={Card.titleText}>{data.title}</Text>
                         </View>
 
-                        <View style={Card.subTitle}>
-                            <Text style={Card.subTitleText}>연합뉴스 SNS 페이지에 있는</Text>
-                            <Text style={Card.subTitle2Text}>어린이주간 소개 카드뉴스
-                                <Text style={Card.subTitleText}>를 공유해주시는 분께</Text>
-                            </Text>
-                            <Text style={Card.subTitleText}>추점을 통하여 푸짐한 선물을 드립니다.</Text>
+                        <View style={Card.discription}>
+                            <Text style={Card.discriptionText}>{data.discription}</Text>
                         </View>
 
                         <View style={Card.contents}>
                             <View style={Card.contentsLabel}>
                                 <Text style={Card.contentsLabelText}>참여 방법</Text>
                             </View>
-                            <Text style={Card.contentsText}>연합뉴스 SNS 페이지에
-                                <Text style={Card.contents2Text}>에 게제된 어린이주간 </Text>
-                            </Text>
-                            <Text style={Card.contents2Text}>소개 카드뉴스를 본인의 SNS 계정에 공유한 후</Text>
-                            <Text style={Card.contents2Text}>공유 인증 URL을 해당 포스트에 댓글로 남겨주세요!</Text>
+                            <Text style={Card.contentsText}>{data.attendWay}</Text>
                         </View>
 
                         <View style={Card.contents}>
                             <View style={Card.contentsLabel}>
-                                <Text style={Card.contentsLabelText}>이벤트 안내</Text>
+                                <Text style={Card.contentsLabelText}>기간 안내</Text>
                             </View>
-                            <Text style={Card.contentsText}>▶이벤트 기간:
-                                <Text style={Card.contents2Text}>2019년 11월 27일(수) ~ 11월 28일 (목) </Text>
-                            </Text>
-                            <Text style={Card.contentsText}>▶당첨자 발표:
-                                <Text style={Card.contents2Text}>2019년 11월 30일(토)</Text>
-                            </Text>
+                            <Text style={[Card.contentsText, { textAlign: "left" }]}>▶이벤트 기간</Text>
+                            <Text style={Card.contents2Text}>{_split(data.startDate, "ymd")} {_split(data.startDate)}</Text>
+                            <Text style={Card.contents2Text}>~ {_split(data.endDate, "ymd")} {_split(data.endDate)}</Text>
                         </View>
 
-                        <View style={[Card.contents,{flexDirection:"row"}]}>
+                        <View style={[Card.contents, { flexDirection: "row" }]}>
                             <View style={Card.contentsLabel}>
-                                <Text style={Card.contentsLabelText}>경품 안내</Text>
+                                <Text style={Card.contentsLabelText}>보상 안내</Text>
                             </View>
-                            <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor:"white" }} ></View>
-                            <View>
-                                <Text>편의점 상품권</Text>
-                                <Text>(5천원권)</Text>
-                                <Text>22명</Text>
-                            </View>
-                            <View style={{ width: 60, height: 60, borderRadius: 30, backgroundColor:"white" }} ></View>
-                            <View>
-                                <Text>아이스크림</Text>
-                                <Text>기프티콘</Text>
-                                <Text>50명</Text>
-                            </View>
+                            <Text style={Card.contentsText}>{data.reward}</Text>
                         </View>
 
                         <View style={Card.footer}>
                             <View style={Card.footerLabel}>
-                                <Text style={Card.footerLabelText}>★TIP★</Text>
+                                <Text style={Card.footerLabelText}>★ TIP ★</Text>
                             </View>
-                            <Text style={Card.footerText}>아동학대예방 캠페인 공식 포스트를 팔로우하면 당첨 확률이 UP! UP!</Text>
+                            <Text style={Card.footerText}>{data.tip}</Text>
                         </View>
                     </View>
+                </View>))}
+            </ScrollView>
 
-                </View>
-            </>
-        );
-    }
+            <Button_LeftTop navigation={navigation} />
+        </>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -116,22 +125,25 @@ const Card = StyleSheet.create({
         alignItems: "center",
     },
 
-    header: {
-        borderRadius: 10,
+    author: {
+        borderBottomLeftRadius: 100,
         backgroundColor: "#fdfeff",
 
         justifyContent: "center",
         alignItems: "center",
 
-        marginVertical: 10,
-        paddingHorizontal: 5,
+        alignSelf: "flex-end",
+
+        paddingHorizontal: 10,
+        paddingLeft: 20,
     },
-    headerText: {
+    authorText: {
         color: "#3aa0c9",
         fontWeight: "bold",
     },
     title: {
-        borderRadius: 10,
+        width: "90%",
+        borderRadius: 5,
         backgroundColor: "#fdfeff",
 
         justifyContent: "center",
@@ -141,16 +153,15 @@ const Card = StyleSheet.create({
         paddingHorizontal: 5,
     },
     titleText: {
-        fontSize: 30,
+        fontSize: 25,
         color: "#41b5e3",
         fontWeight: "bold",
+
+        textAlign: "center",
     },
-    title2Text: {
-        fontSize: 25,
-        color: "#3aa0c9",
-        fontWeight: "bold",
-    },
-    subTitle: {
+
+    discription: {
+        width: "80%",
         borderRadius: 10,
         // backgroundColor: "#fdfeff",
 
@@ -160,25 +171,25 @@ const Card = StyleSheet.create({
         marginVertical: 10,
         paddingHorizontal: 5,
     },
-    subTitleText: {
+    discriptionText: {
         color: "#41b5e3",
         fontWeight: "bold",
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 2,
-        textShadowColor: "white"
-    },
-    subTitle2Text: {
-        color: "#37baee",
-        fontWeight: "bold",
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 2,
-        textShadowColor: "white"
+        textShadowColor: "white",
+        textDecorationLine: "underline",
+
+        textAlign: "center",
     },
 
     contents: {
         width: "80%",
-        // borderRadius: 10,
+        borderRadius: 3,
         backgroundColor: "#73cef2",
+        // shadowOffset: {width: 5, height: 5 },
+        // shadowRadius: 2,
+        // shadowColor: "red",
+        elevation: 2,
 
         justifyContent: "center",
         // alignItems: "center",
@@ -192,6 +203,7 @@ const Card = StyleSheet.create({
         position: "absolute",
         top: -10,
         left: -10,
+        elevation: 2,
 
         borderRadius: 10,
         backgroundColor: "white",
@@ -199,7 +211,7 @@ const Card = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
 
-        paddingHorizontal: 5,
+        paddingHorizontal: 7,
     },
     contentsLabelText: {
         fontSize: 15,
@@ -207,22 +219,27 @@ const Card = StyleSheet.create({
         fontWeight: "bold",
     },
     contentsText: {
+        width: "95%",
+        alignSelf: "center",
         // fontSize: 25,
         color: "#247291",
         fontWeight: "bold",
+
+        textAlign: "center",
     },
     contents2Text: {
+        paddingLeft: 20,
+
         // fontSize: 25,
         color: "white",
         fontWeight: "bold",
     },
 
     footer: {
-        flexDirection: "row",
-        flexWrap: "wrap",
-        width: "90%",
-        // borderRadius: 10,
-        // backgroundColor: "#73cef2",
+        width: "80%",
+        borderWidth: 0.5,
+        borderColor: "#3aa0c9",
+        borderRadius: 3,
 
         justifyContent: "center",
         alignItems: "center",
@@ -231,21 +248,31 @@ const Card = StyleSheet.create({
         paddingHorizontal: 5,
     },
     footerLabel: {
+        position: "absolute",
+        top: -10,
+        left: -10,
+        elevation: 2,
+
         backgroundColor: "#3aa0c9",
         borderRadius: 10,
 
         justifyContent: "center",
         alignItems: "center",
 
-        marginLeft: 10,
-        paddingHorizontal: 5,
+        paddingHorizontal: 7,
     },
     footerLabelText: {
         color: "white",
         fontWeight: "bold",
     },
     footerText: {
+        marginVertical: 10,
+        width: "95%",
+        alignSelf: "center",
+        // fontSize: 25,
         color: "#3aa0c9",
         fontWeight: "bold",
+
+        textAlign: "center",
     },
 });
